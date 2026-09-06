@@ -43,12 +43,6 @@
         {{ cond $en "All signals" "Všechny signály" }} <i class="bi bi-arrow-right-short"></i>
       </a>
     </div>
-    <p class="pp-home-sub">
-      {{ $sig.n_signals }} {{ cond $en "series above the expected endemic level" "řad nad očekávanou endemickou hladinou" }}
-      {{ with $sig.target_period }}· {{ . }}{{ end }}
-      · {{ $sig.n_series_scored }} {{ cond $en "series screened" "prověřených řad" }}
-    </p>
-
     {{/* Tabulka se staví UŽ PŘI BUILDU: bez JS je vidět celý výpis, s JS se
          z ní stane přepínač mapy. Obě strany vycházejí z téhož JSONu, takže se
          nemají jak rozejít.
@@ -93,14 +87,17 @@
 
     <p class="pp-home-caveat">
       <i class="bi bi-info-circle" aria-hidden="true"></i>
+      {{/* ⛔ Bez čísla o falešné pozitivitě. Tvrzení „při 99. percentilu ~1 %
+           překročení náhodou" platilo pro předchozí metodu; od PPDB-54 běží
+           bayesovská FDR (payload nese `fdr`), u které se falešná pozitivita
+           popisuje jinak. Správnou formulaci musí dodat autor metody — do té
+           doby je poctivější neuvádět žádné číslo než uvádět zastaralé. */}}
       {{ if $en }}
       A signal is a statistical screen, <strong>not a confirmed outbreak</strong>. It can also be a
-      change in reporting or plain chance — at the 99th percentile roughly 1 % of series cross the
-      threshold by accident.
+      change in reporting or plain chance.
       {{ else }}
       Signál je statistický screening, <strong>ne potvrzená epidemie</strong>. Za překročením může
-      stát i změna vykazování nebo prostá náhoda — při 99. percentilu čekáme zhruba 1 % překročení
-      čistou náhodou.
+      stát i změna vykazování nebo prostá náhoda.
       {{ end }}
     </p>
   </section>

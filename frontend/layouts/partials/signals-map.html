@@ -26,7 +26,7 @@
   {{ end }}
 
   <div class="pp-signalmap__grid">
-    {{/* ── Tabulka = výpis i přepínač ─────────────────────────────────── */}}
+    {{/* ── Seznam = výpis i přepínač ───────────────────────────────────── */}}
     <div class="pp-signalmap__listcol">
       {{/* ⛔ Seznam, ne tabulka. Sloupce s počtem krajů a silou jsou pryč —
            tatáž čísla jsou v mapě u konkrétního kraje, kde mají kontext. Zbylo
@@ -37,7 +37,6 @@
 
            ⚠️ Pořadí nese informaci — nejsilnější signál je první a je vybraný. */}}
       <ul class="pp-signalmap__list" data-pp-signalmap-rows>{{ $rows | safeHTML }}</ul>
-    </div>
     </div>
 
     {{/* ── Mapa vybrané diagnózy ──────────────────────────────────────── */}}

@@ -23,13 +23,13 @@ count exceeded the threshold.
 
 | Column | Meaning |
 |---|---|
-| **Cases** | How many cases were actually notified in the given month. |
-| **Expected** | The model's endemic level: how many cases this disease, in this region, at this time of year, would have in an ordinary year. Computed from the 2018–present history with past epidemics down-weighted. |
-| **Threshold** | The upper limit of what ordinary fluctuation can still explain (99th percentile of the prediction interval). A value between *Expected* and *Threshold* is business as usual; a signal starts above the threshold. |
-| **Strength** | How many times the observation exceeded the distance from expectation to threshold. **1×** = exactly at the threshold, **2×** = twice as far beyond it. The higher, the less likely it is chance. |
+| **Reported** | How many cases were actually notified in the given month. |
+| **Usually** | The model's endemic level: how many cases this disease, in this region, at this time of year, would have in an ordinary year. Computed from the 2018–present history with past epidemics down-weighted. |
+| **Still normal up to** | The upper limit of what ordinary fluctuation can still explain (99th percentile of the prediction interval). A count between *Usually* and this limit is business as usual; a signal starts above it. |
+| **Exceeded by** | How many times further past the limit of normal than that limit is from the usual level. **1×** = exactly at the limit, **2×** = twice as far beyond it. The higher, the less likely it is chance. |
 
-An example from the table: hepatitis A in the South Moravian region — expected
-**0.9** cases, threshold **5**, notified **80**. The observation is ~19× further
+An example from the table: hepatitis A in the South Moravian region — usually
+**1** case, still normal up to **5**, notified **80**. The observation is ~19× further
 beyond the threshold than ordinary fluctuation reaches (strength 19×) — chance
 practically cannot explain that.
 
@@ -53,10 +53,8 @@ chance — with 1,200 series scored, we expect a few such rows every month.
 A signal says one thing only: *the number of notified cases is statistically well above
 what would be usual for this disease, in this region, at this time of year*. **It is not
 a confirmed outbreak.** An exceedance may reflect a genuine cluster, but also a change
-in reporting practice, delayed notifications catching up, or plain chance — at the
-threshold used (99th percentile) we expect roughly **1% of series to exceed it by
-chance alone** even in a completely calm situation. A signal is an invitation to look
-closer, not a conclusion.
+in reporting practice, delayed notifications catching up, or plain chance.
+A signal is an invitation to look closer, not a conclusion.
 
 The reverse also holds: **silence is not evidence of calm.** Data for the most recent
 months are always incomplete (notifications arrive with a delay), so a fresh rise may

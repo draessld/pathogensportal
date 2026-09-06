@@ -49,9 +49,8 @@ při 1 200 hodnocených řadách jich pár takových čekáme každý měsíc.
 Signál říká jediné: *počet hlášených případů je statisticky výrazně nad tím, co by
 pro tuto nemoc, v tomto kraji a v tomto ročním období bylo obvyklé*. **Není to
 potvrzená epidemie.** Za překročením může stát skutečné ohnisko, ale i změna
-způsobu vykazování, dohlášení starších případů nebo prostá náhoda — při použitém
-prahu (99. percentil) čekáme zhruba **1 % překročení čistou náhodou** i v úplně
-klidné situaci. Signál je pozvánka podívat se blíž, ne závěr.
+způsobu vykazování, dohlášení starších případů nebo prostá náhoda.
+Signál je pozvánka podívat se blíž, ne závěr.
 
 Platí to i obráceně: **ticho není důkaz klidu.** Data za poslední měsíce jsou vždy
 neúplná (hlášení dobíhají se zpožděním), takže čerstvý nástup se může ukázat až
