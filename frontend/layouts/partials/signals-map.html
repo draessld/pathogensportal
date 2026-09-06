@@ -28,30 +28,16 @@
   <div class="pp-signalmap__grid">
     {{/* ── Tabulka = výpis i přepínač ─────────────────────────────────── */}}
     <div class="pp-signalmap__listcol">
-      <div class="pp-signalmap__tablewrap">
-        <table class="pp-table pp-signalmap__table" data-no-datatable>
-          {{/* ⚠️ Popisek místo hlavičky sloupců. Hlavička byla odstraněná jako
-               zbytečná a význam zůstal jen v `title` — jenže ten se ukáže až po
-               najetí, takže ho nikdo nenajde a čísla jsou pak hádanka („co je
-               5 a 18,9×?"). Jeden řádek nad tabulkou to řekne bez toho, aby se
-               nadpisy opakovaly nad každým sloupcem. */}}
-          <caption class="pp-signalmap__caption">
-            {{ if $en }}Disease · how many regions are above normal · and the strongest exceedance
-            {{ else }}Nemoc · v kolika krajích překračuje normu · a nejsilnější překročení{{ end }}
-          </caption>
-          {{/* ⚠️ Vizuálně schovaná, ne odstraněná. Je to prostý výčet, hlavička
-               nad deseti řádky jen zabírá místo — ale čtečka obrazovky bez ní
-               čte holá čísla bez významu. `visually-hidden` je Bootstrap 5. */}}
-          <thead class="visually-hidden">
-            <tr>
-              <th scope="col">{{ cond $en "Diagnosis" "Diagnóza" }}</th>
-              <th scope="col">{{ cond $en "Regions with a signal" "Krajů se signálem" }}</th>
-              <th scope="col">{{ cond $en "Highest strength" "Nejvyšší síla" }}</th>
-            </tr>
-          </thead>
-          <tbody data-pp-signalmap-rows>{{ $rows | safeHTML }}</tbody>
-        </table>
-      </div>
+      {{/* ⛔ Seznam, ne tabulka. Sloupce s počtem krajů a silou jsou pryč —
+           tatáž čísla jsou v mapě u konkrétního kraje, kde mají kontext. Zbylo
+           jedno pole, a jeden sloupec není tabulka.
+
+           `<button>` místo klikacího řádku: roli, ovládání klávesnicí i chování
+           na Enter a mezerník dostaneme od prohlížeče a nemusíme je dopisovat.
+
+           ⚠️ Pořadí nese informaci — nejsilnější signál je první a je vybraný. */}}
+      <ul class="pp-signalmap__list" data-pp-signalmap-rows>{{ $rows | safeHTML }}</ul>
+    </div>
     </div>
 
     {{/* ── Mapa vybrané diagnózy ──────────────────────────────────────── */}}

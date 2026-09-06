@@ -85,29 +85,8 @@
          nevrací — tabulka, která se sama stránkuje po 25, přestává být přepínač. */}}
     {{ $rows := "" }}
     {{ range first 10 $list }}
-      {{/* Diagnóza jen s celostátním signálem má v krajích nulu. Vypsat u ní
-           „0,0×" by tvrdilo, že signál je nulový; ona ho má, jen ne v kraji. */}}
-      {{/* „—" i tehdy, když kraje signál mají, ale žádný z nich nemá spočtenou
-           sílu (typ "rare" nese score=null). Jinak by se vypsalo „0,0×", což
-           tvrdí nulovou sílu místo „sílu tu model nepočítá". */}}
-      {{ $strength := cond (gt .max 0.0) (printf "%s×" (lang.FormatNumber 1 .max)) "—" }}
-      {{/* ⛔ Bez odznaku „ČR". Měl znamenat „má i celostátní signál", ale četl se
-           jako „česká data" — což jsou všechna, takže to nic nerozlišovalo. Když
-           se štítek dá číst špatně, je špatný bez ohledu na to, jak byl myšlený.
-           Nic se tím neztratí: diagnózu bez krajského signálu prozradí nula ve
-           sloupci krajů, a celostátní čísla se ukážou pod mapou po výběru. */}}
-      {{/* Skloňování: 1 kraj · 2–4 kraje · 5+ krajů. „1 krajů" na veřejném webu
-           vypadá jako strojový překlad.
-           ⚠️ Počítá se PŘED printf — komentář ani `cond` se nedají vložit dovnitř
-           seznamu argumentů, Hugo to odmítne s „unexpected { in operand". */}}
-      {{ $unit := cond (eq .regions 1) " kraj" (cond (lt .regions 5) " kraje" " krajů") }}
-      {{/* Jednotka je v buňce, ne jen v `title`. „5" samo o sobě nic neříká,
-           „5 krajů" ano — a u deseti řádků to nezabere víc než jeden sloupec. */}}
-      {{ $rows = printf `%s<tr data-dg="%s"><td>%s</td><td class="num" title="%s">%d<span class="pp-unit">%s</span></td><td class="num" title="%s"><strong>%s</strong></td></tr>`
-          $rows .code .name
-          (cond $en "regions above normal" "krajů nad normou") .regions
-          (cond $en " reg." $unit)
-          (cond $en "strongest exceedance across regions" "nejsilnější překročení napříč kraji") $strength }}
+      {{ $rows = printf `%s<li><button type="button" class="pp-signalmap__item" data-dg="%s">%s</button></li>`
+          $rows .code .name }}
     {{ end }}
 
     {{ partial "signals-map.html" (dict "ctx" $ "rows" $rows) }}

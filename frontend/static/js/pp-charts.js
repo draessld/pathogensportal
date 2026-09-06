@@ -983,13 +983,10 @@
           }
         }
 
-        tbody.querySelectorAll("[data-dg]").forEach(function (row) {
-          row.setAttribute("tabindex", "0");
-          row.setAttribute("role", "button");
-          row.addEventListener("click", function () { select(row.getAttribute("data-dg"), true); });
-          row.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(row.getAttribute("data-dg"), true); }
-          });
+        /* Jsou to <button>, takže tabindex, role ani obsluha Enter/mezerníku
+           nejsou potřeba — prohlížeč to umí sám a líp. */
+        tbody.querySelectorAll("[data-dg]").forEach(function (btn) {
+          btn.addEventListener("click", function () { select(btn.getAttribute("data-dg"), true); });
         });
 
         select(order[0]);
