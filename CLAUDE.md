@@ -110,7 +110,7 @@ through Apache.
 
 - `pathogensportal-priv` — **private** infra (Ansible, configs, Vault). Nothing infra or secret goes here.
 - `pathogensportal-db` — scrapers + DB schema, attached as a **submodule pinned to a release tag**
-  (currently `v0.2.0`; URL in `.gitmodules` points at the `elixir-cz-pathogens` org). After every
+  (currently `v0.4.0`; URL in `.gitmodules` points at the `elixir-cz-pathogens` org). After every
   pipeline release the pin must be bumped in a PR here, or production keeps building the old
   `datascrapper` image — this was missed once and cost a debugging session.
 
