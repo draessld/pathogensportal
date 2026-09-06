@@ -881,9 +881,15 @@
           });
         }
 
+        var current = null;
+
         function select(code, animate) {
           var g = groups[code];
           if (!g) return;
+          current = g;
+          /* Přepnutí pod otevřeným tooltipem by nechalo viset čísla staré
+             diagnózy, dokud myš neopustí kraj. */
+          tooltip.style.display = "none";
 
           tbody.querySelectorAll("[data-dg]").forEach(function (row) {
             var on = row.getAttribute("data-dg") === code;
@@ -943,32 +949,6 @@
               ", " + tr("obvykle bývá") + " " + fmtInt(sig.expected) +
               ", " + tr("ještě v normě do") + " " + fmtInt(sig.threshold));
 
-            function show(event) {
-              tooltip.style.display = "block";
-              tooltip.innerHTML =
-                "<strong>" + escapeHtml(sig.kraj_nazev) + "</strong><br>" +
-                tr("nahlášeno") + ": " + fmt(sig.observed) + "<br>" +
-                tr("obvykle bývá") + ": " + fmtInt(sig.expected) + "<br>" +
-                tr("ještě v normě do") + ": " + fmtInt(sig.threshold) + "<br>" +
-                tr("překročeno") + " " + fmt(sig.score) + "×";
-              /* ⛔ Vůči .pp-map, ne vůči <figure>. Tooltip je uvnitř .pp-map, což je
-                 jeho position:relative rodič — počítat souřadnice vůči kartě a
-                 aplikovat je vůči mapě posune tooltip o šířku levého sloupce, tedy
-                 mimo viditelnou část. Proto se při najetí nic neobjevovalo. */
-              var rect = mapBox.getBoundingClientRect();
-              var x = event.clientX !== undefined ? event.clientX : rect.left + rect.width / 2;
-              var y = event.clientY !== undefined ? event.clientY : rect.top;
-              var left = x - rect.left + 14;
-              /* Ať nevyleze z mapy vpravo. */
-              if (left + 170 > rect.width) left = Math.max(4, x - rect.left - 180);
-              tooltip.style.left = left + "px";
-              tooltip.style.top = Math.max(4, y - rect.top - 78) + "px";
-            }
-            path.addEventListener("mouseenter", show);
-            path.addEventListener("mousemove", show);
-            path.addEventListener("focus", show);
-            path.addEventListener("mouseleave", function () { tooltip.style.display = "none"; });
-            path.addEventListener("blur", function () { tooltip.style.display = "none"; });
           });
 
           if (g.national) {
@@ -982,6 +962,45 @@
             natEl.hidden = true;
           }
         }
+
+        /* ⛔ Posluchače tooltipu se věší JEDNOU na kraj, ne při každém výběru.
+           Původně je věšel select(). clearMap() sice odebral barvu, třídu
+           `is-clickable` i aria-label, ale posluchače ne — takže po přepnutí
+           diagnózy ukazoval BÍLÝ kraj čísla té PŘEDCHOZÍ, a s každým dalším
+           přepnutím na něm přibyl další. Nahlášeno z náhledu: klik na nevybarvený
+           kraj u hepatitidy A vrátil data, která tam neměla co dělat.
+
+           Handler si sáhne na `current` až při spuštění, takže vždycky odpovídá
+           tomu, co je zrovna vybrané. Kraj bez signálu nezobrazí nic. */
+        Object.keys(regionPaths).forEach(function (rc) {
+          var path = regionPaths[rc];
+
+          function show(event) {
+            var sig = current && current.regions[rc];
+            if (!sig) { tooltip.style.display = "none"; return; }
+            tooltip.style.display = "block";
+            tooltip.innerHTML =
+              "<strong>" + escapeHtml(sig.kraj_nazev) + "</strong><br>" +
+              tr("nahlášeno") + ": " + fmt(sig.observed) + "<br>" +
+              tr("obvykle bývá") + ": " + fmtInt(sig.expected) + "<br>" +
+              tr("ještě v normě do") + ": " + fmtInt(sig.threshold) + "<br>" +
+              tr("překročeno") + " " + fmt(sig.score) + "×";
+            var rect = mapBox.getBoundingClientRect();
+            var x = event.clientX !== undefined ? event.clientX : rect.left + rect.width / 2;
+            var y = event.clientY !== undefined ? event.clientY : rect.top;
+            var left = x - rect.left + 14;
+            if (left + 170 > rect.width) left = Math.max(4, x - rect.left - 180);
+            tooltip.style.left = left + "px";
+            tooltip.style.top = Math.max(4, y - rect.top - 78) + "px";
+          }
+          function hide() { tooltip.style.display = "none"; }
+
+          path.addEventListener("mouseenter", show);
+          path.addEventListener("mousemove", show);
+          path.addEventListener("focus", show);
+          path.addEventListener("mouseleave", hide);
+          path.addEventListener("blur", hide);
+        });
 
         /* Jsou to <button>, takže tabindex, role ani obsluha Enter/mezerníku
            nejsou potřeba — prohlížeč to umí sám a líp. */
