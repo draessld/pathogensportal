@@ -30,6 +30,15 @@
     <div class="pp-signalmap__listcol">
       <div class="pp-signalmap__tablewrap">
         <table class="pp-table pp-signalmap__table" data-no-datatable>
+          {{/* ⚠️ Popisek místo hlavičky sloupců. Hlavička byla odstraněná jako
+               zbytečná a význam zůstal jen v `title` — jenže ten se ukáže až po
+               najetí, takže ho nikdo nenajde a čísla jsou pak hádanka („co je
+               5 a 18,9×?"). Jeden řádek nad tabulkou to řekne bez toho, aby se
+               nadpisy opakovaly nad každým sloupcem. */}}
+          <caption class="pp-signalmap__caption">
+            {{ if $en }}Disease · how many regions are above normal · and the strongest exceedance
+            {{ else }}Nemoc · v kolika krajích překračuje normu · a nejsilnější překročení{{ end }}
+          </caption>
           {{/* ⚠️ Vizuálně schovaná, ne odstraněná. Je to prostý výčet, hlavička
                nad deseti řádky jen zabírá místo — ale čtečka obrazovky bez ní
                čte holá čísla bez významu. `visually-hidden` je Bootstrap 5. */}}

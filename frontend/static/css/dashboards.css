@@ -810,3 +810,13 @@
   stroke-width: 3;
   opacity: .85;
 }
+
+/* Popisek tabulky signálů — nahrazuje hlavičku sloupců. */
+.pp-signalmap__caption {
+  caption-side: top;
+  padding: 0 0 .5rem;
+  text-align: left;
+  font-size: .78rem;
+  color: var(--pp-text-muted);
+}
+.pp-signalmap__table .pp-unit { font-size: .78em; color: var(--pp-text-muted); font-weight: 400; }

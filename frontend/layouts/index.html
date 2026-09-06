@@ -96,10 +96,18 @@
            se štítek dá číst špatně, je špatný bez ohledu na to, jak byl myšlený.
            Nic se tím neztratí: diagnózu bez krajského signálu prozradí nula ve
            sloupci krajů, a celostátní čísla se ukážou pod mapou po výběru. */}}
-      {{ $rows = printf `%s<tr data-dg="%s"><td>%s</td><td class="num" title="%s">%d</td><td class="num" title="%s"><strong>%s</strong></td></tr>`
+      {{/* Skloňování: 1 kraj · 2–4 kraje · 5+ krajů. „1 krajů" na veřejném webu
+           vypadá jako strojový překlad.
+           ⚠️ Počítá se PŘED printf — komentář ani `cond` se nedají vložit dovnitř
+           seznamu argumentů, Hugo to odmítne s „unexpected { in operand". */}}
+      {{ $unit := cond (eq .regions 1) " kraj" (cond (lt .regions 5) " kraje" " krajů") }}
+      {{/* Jednotka je v buňce, ne jen v `title`. „5" samo o sobě nic neříká,
+           „5 krajů" ano — a u deseti řádků to nezabere víc než jeden sloupec. */}}
+      {{ $rows = printf `%s<tr data-dg="%s"><td>%s</td><td class="num" title="%s">%d<span class="pp-unit">%s</span></td><td class="num" title="%s"><strong>%s</strong></td></tr>`
           $rows .code .name
-          (cond $en "regions with a signal" "krajů se signálem") .regions
-          (cond $en "highest strength across regions" "nejvyšší síla napříč kraji") $strength }}
+          (cond $en "regions above normal" "krajů nad normou") .regions
+          (cond $en " reg." $unit)
+          (cond $en "strongest exceedance across regions" "nejsilnější překročení napříč kraji") $strength }}
     {{ end }}
 
     {{ partial "signals-map.html" (dict "ctx" $ "rows" $rows) }}
