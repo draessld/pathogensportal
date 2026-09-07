@@ -20,6 +20,10 @@ name: "AUTOMATION: Sync main → dev"
 # squashovat do `main`, nebo zrušit dlouho žijící `dev`. Dokud platí obojí,
 # rozcházení je vlastnost, ne nehoda — a pak ho má srovnávat stroj, ne člověk,
 # který si na to musí vzpomenout po každém releasu.
+# ⛔ TENHLE SOUBOR MUSÍ ŽÍT NA `main`. U události `push` bere GitHub definici
+# workflow z větve, KTERÁ SE PUSHUJE — takže kopie na `dev` se nikdy nespustí.
+# Poprvé jsem ho omylem přidal jen na `dev` a byl by to němý strážce: existoval
+# by, tvářil se, že hlídá, a nikdy by nevystřelil.
 on:
   push:
     branches: [main]
