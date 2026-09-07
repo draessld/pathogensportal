@@ -13,6 +13,17 @@ enableRobotsTXT = true
   images = ["/images/og-card-2026-09.png"]
   homepage = "https://pathogens.vm.cesnet.cz"
   logo = "/images/elixir_logo.png"
+  # ⛔ VYPNUTO NA PRODUKCI (7. 9. 2026). Blok „Co teď překračuje očekávanou
+  # hladinu" se na titulce zatím nemá zobrazovat; na `dev` zůstává zapnutý a
+  # vyvíjí se dál. Šablona je na obou větvích SHODNÁ — liší se jen tenhle řádek,
+  # aby se z index.html nestal konfliktní bod při každém releasu.
+  #
+  # ⚠️ Plochý klíč, ne [params.homepage]. Za prvé `homepage` už je nad tímhle
+  # obsazené jako URL portálu, takže by z toho byla kolize „key homepage should
+  # be a table, not a value". Za druhé podtabulka uprostřed [params] by pohltila
+  # všechny klíče pod sebou — `apibase` a analytiku — a to tiše.
+  home_signals = false
+
   # Base URL of the charts API. Empty = same origin (production: the Apache proxy).
   # The dev server runs on a different port from the BE -> compose sets HUGO_PARAMS_APIBASE.
   # No underscore, deliberately: Hugo treats `_` in an env variable name as a level

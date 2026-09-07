@@ -22,6 +22,16 @@
     {{ with .Content }}<div class="pp-home-lead">{{ . }}</div>{{ end }}
   </section>
 
+  {{/* ⛔ Blok signálů je za přepínačem `params.homepage.signals`, ne smazaný.
+       Na produkci je vypnutý (rozhodnutí 7. 9. 2026), na dev zapnutý a vyvíjí se.
+
+       Proč přepínač a ne smazání bloku: kdyby se `main` a `dev` lišily o šedesát
+       řádků v tomhle souboru, stal by se z něj konfliktní bod při KAŽDÉM dalším
+       releasu — `dev` ten soubor dál mění. Takhle je soubor na obou větvích
+       shodný a liší se jediný řádek v hugo.toml.
+
+       ⚠️ Zapnout zpátky = `signals = true` v hugo.toml. Nic jiného. */}}
+  {{ if .Site.Params.home_signals }}
   {{/* ── 2. Signály ────────────────────────────────────────────────────────
        ⛔ Nadpis říká „překračuje očekávanou hladinu", NE „predikce". Metoda
        (Farrington/Noufaily) počítá, kolik případů by dané období mělo mít, a
@@ -102,6 +112,8 @@
     </p>
   </section>
   {{ end }}
+  {{ end }}
+
   {{ end }}
 
   {{/* ── 3. Novinky ────────────────────────────────────────────────────── */}}
