@@ -1,0 +1,82 @@
+# Text upozornění o zpracování dat (PP-55).
+#
+# Proč v datovém souboru a ne v šabloně: je to text, který bude někdo upravovat
+# bez toho, aby sahal na Hugo šablonu — a proto, aby se česká a anglická verze
+# daly porovnat vedle sebe, ne hledat mezi `cond` výrazy.
+#
+# ⛔ Když se tenhle text mění, musí se měnit i to, co portál doopravdy dělá.
+# Oznámení, které tvrdí něco jiného než realita, je horší než žádné.
+cs:
+  banner: >-
+    Portál si o návštěvě ukládá provozní záznam (IP adresa, čas, stránka)
+    a používá vlastní statistiku návštěvnosti. Bez cookies, bez sledování napříč weby.
+  more: Podrobnosti
+  dismiss: Rozumím
+  title: Zpracování osobních údajů
+  close: Zavřít
+  sections:
+    - h: Co se zpracovává
+      p:
+        - "**Provozní záznam webového serveru** — IP adresa, čas, adresa stránky, typ prohlížeče a odkud jste přišli. Maže se po **14 dnech**."
+        - "**Počty návštěv podle organizace** — IP adresa se přeloží na organizaci (například „Univerzita Karlova“) a **zahodí**. Uchovávají se jen počty, trvale. Nejsou to osobní údaje."
+        - "**Které stránky se čtou** — vlastní statistika (Umami) běžící na našem serveru. Bez cookies a bez identifikátoru zařízení."
+    - h: Proč
+      p:
+        - "**Provoz a bezpečnost.** Bez záznamu se nedá zjistit, že server nefunguje, ani rozpoznat útok. Drtivou většinu provozu tvoří dnes automatizované skenování."
+        - "**Doložení užitečnosti.** Portál vzniká z veřejných prostředků a potřebujeme umět doložit, kdo ho používá — na úrovni **institucí, ne osob**."
+        - "Právním základem je oprávněný zájem správce (čl. 6 odst. 1 písm. f GDPR)."
+    - h: Co se nedělá
+      p:
+        - "Nesledujeme jednotlivé návštěvníky napříč návštěvami ani napříč weby."
+        - "Nepředáváme data třetím stranám — statistika běží na našem serveru, data z něj neodcházejí."
+        - "Neprofilujeme a neděláme automatizované rozhodování."
+        - "Neukládáme IP adresy do statistik."
+    - h: Co se ukládá do vašeho zařízení
+      p:
+        - "**Jedna položka**, a jen proto, aby se tohle upozornění nezobrazovalo při každé návštěvě. Není to identifikátor, neodchází nikam a smaže se s daty prohlížeče."
+        - "⛔ Nic jiného. Žádné cookies, žádný nástroj třetí strany."
+    - h: Vaše práva
+      p:
+        - "Máte právo na přístup, opravu, výmaz, omezení zpracování, právo vznést námitku a podat stížnost u [Úřadu pro ochranu osobních údajů](https://uoou.gov.cz)."
+        - "⚠️ Prakticky: v provozním záznamu vás **nedokážeme dohledat**, pokud nesdělíte IP adresu a přibližný čas návštěvy — nic jiného, podle čeho hledat, neuchováváme. Je to důsledek toho, že nesbíráme víc, než je potřeba."
+    - h: Správce
+      p:
+        - "**Ústav molekulární genetiky AV ČR**, v rámci projektu ELIXIR IMPACT2."
+        - "Kontakt: **Mgr. Jan Pačes, Ph.D.** — [hpaces@img.cas.cz](mailto:hpaces@img.cas.cz)"
+en:
+  banner: >-
+    This portal keeps a server access log of your visit (IP address, time, page)
+    and runs its own visitor statistics. No cookies, no cross-site tracking.
+  more: Details
+  dismiss: Got it
+  title: Processing of personal data
+  close: Close
+  sections:
+    - h: What is processed
+      p:
+        - "**Web server access log** — IP address, time, page address, browser type and referring page. Deleted after **14 days**."
+        - "**Visit counts by organisation** — the IP address is resolved to an organisation (for example \"Charles University\") and **discarded**. Only counts are kept, indefinitely. They are not personal data."
+        - "**Which pages are read** — our own analytics (Umami) running on our server. No cookies, no device identifier."
+    - h: Why
+      p:
+        - "**Operation and security.** Without the log there is no way to tell the server is broken, or to recognise an attack. Most traffic today is automated scanning."
+        - "**Demonstrating usefulness.** The portal is publicly funded and we need to show who uses it — at the level of **institutions, not individuals**."
+        - "The legal basis is the controller's legitimate interest (Art. 6(1)(f) GDPR)."
+    - h: What we do not do
+      p:
+        - "We do not track individual visitors across visits or across sites."
+        - "We do not pass data to third parties — the analytics runs on our own server and the data does not leave it."
+        - "We do not profile and do not make automated decisions."
+        - "We do not store IP addresses in the statistics."
+    - h: What is stored on your device
+      p:
+        - "**One item**, and only so that this notice does not appear on every visit. It is not an identifier, it goes nowhere, and it is removed when you clear your browser data."
+        - "⛔ Nothing else. No cookies, no third-party tool."
+    - h: Your rights
+      p:
+        - "You have the right of access, rectification, erasure, restriction of processing, to object, and to lodge a complaint with the [Czech Data Protection Authority](https://uoou.gov.cz)."
+        - "⚠️ In practice: we **cannot find you** in the access log unless you tell us the IP address and roughly when you visited — we keep nothing else to search on. That is a consequence of not collecting more than we need."
+    - h: Controller
+      p:
+        - "**Institute of Molecular Genetics of the Czech Academy of Sciences**, as part of the ELIXIR IMPACT2 project."
+        - "Contact: **Mgr. Jan Pačes, Ph.D.** — [hpaces@img.cas.cz](mailto:hpaces@img.cas.cz)"

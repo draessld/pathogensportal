@@ -204,3 +204,51 @@
   /* Sticky v jednosloupcovém rozvržení jen poskakuje. */
   .pp-home-topics { position: static; }
 }
+
+/* ── Upozornění o zpracování dat (PP-55) ─────────────────────────────────── */
+.pp-privacy {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1080;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: .6rem 1.25rem;
+  padding: .7rem 1rem;
+  background: #1f1f1e; color: #f2f1ee;
+  font-size: .85rem; line-height: 1.4;
+  box-shadow: 0 -2px 12px rgba(0,0,0,.18);
+}
+.pp-privacy__text { margin: 0; max-width: 68ch; }
+.pp-privacy__actions { display: flex; gap: .5rem; align-items: center; }
+.pp-privacy__link {
+  background: none; border: 0; padding: .25rem .1rem;
+  color: #9ec5f5; font: inherit; text-decoration: underline; cursor: pointer;
+}
+.pp-privacy__link:hover { color: #c9dffb; }
+.pp-privacy__ok {
+  background: #f2f1ee; color: #1f1f1e; border: 0; border-radius: 6px;
+  padding: .3rem .9rem; font: inherit; font-weight: 600; cursor: pointer;
+}
+.pp-privacy__ok:hover { background: #fff; }
+.pp-privacy__footer { color: #77766f; text-decoration: underline; }
+
+.pp-privacy-dialog {
+  max-width: 46rem; width: calc(100% - 2rem);
+  border: 1px solid #e2e1dc; border-radius: 12px; padding: 0;
+  color: #0b0b0b; background: #fff;
+}
+.pp-privacy-dialog::backdrop { background: rgba(11,11,11,.45); }
+.pp-privacy-dialog article { padding: 1.25rem 1.5rem 1.5rem; }
+.pp-privacy-dialog__head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  border-bottom: 1px solid #e2e1dc; padding-bottom: .6rem; margin-bottom: .9rem;
+}
+.pp-privacy-dialog__head h2 { margin: 0; font-size: 1.2rem; }
+.pp-privacy-dialog__x {
+  background: none; border: 0; font-size: 1.6rem; line-height: 1;
+  color: #77766f; cursor: pointer; padding: 0 .2rem;
+}
+.pp-privacy-dialog__x:hover { color: #0b0b0b; }
+.pp-privacy-dialog h3 { font-size: .98rem; margin: 1.1rem 0 .3rem; }
+.pp-privacy-dialog p { margin: 0 0 .5rem; font-size: .875rem; line-height: 1.5; }
+@media (max-width: 576px) {
+  .pp-privacy { flex-direction: column; align-items: flex-start; }
+  .pp-privacy__actions { align-self: stretch; justify-content: flex-end; }
+}
