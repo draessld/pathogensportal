@@ -14,17 +14,18 @@
 
 <div class="pp-viz">
   <header class="pp-dash-header">
-    {{/* The breadcrumb is rendered by the theme above the content — do not duplicate it. */}}
-    <h1>{{ .Title }}</h1>
+    {{/* The breadcrumb is rendered by the theme above the content — do not duplicate it.
+
+         ⚠️ No <h1> here either: the banner in partials/header.html already renders
+         .Title as the page's h1, so this one printed every dashboard's name twice —
+         once in the green header band, once immediately below it. Same bug the
+         home page had. */}}
     {{ with .Description }}<p class="pp-dash-lead">{{ . }}</p>{{ end }}
 
     <div class="pp-meta">
-      {{/* Původ dat (PP-57). U `ai-assisted` je to tvrzení o integritě, ne
-           ozdoba: `data_source` u ebola stránek uvádí jména dvou lidí a samo
-           o sobě neřekne, že text psal stroj.
-           ⚠️ Na `dev` tenhle soubor navíc ruší <h1>, protože tam banner v
-           partials/header.html přebral roli nadpisu stránky. Sem se to NEBERE —
-           bez toho partialu by dashboardy zůstaly bez <h1> úplně. */}}
+      {{/* Původ dat (PP-57) — první v řadě metadat. U `ai-assisted` je to
+           tvrzení o integritě, ne ozdoba: `data_source` u těch stránek uvádí
+           jména dvou lidí a samo o sobě neřekne, že text psal stroj. */}}
       {{ with partial "origin-badge.html" (dict "page" .) }}
       <span class="pp-meta__item">{{ . }}</span>
       {{ end }}

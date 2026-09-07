@@ -66,17 +66,13 @@
       </div>
     </div>
 
-    <!-- ELIXIR logo -->
-    <div class="col-md px-5 px-md-2 d-flex align-items-center justify-content-center justify-content-md-end">
-      <a href="https://elixir-europe.org" target="_blank" rel="noopener" aria-label="ELIXIR Europe">
-        <img src="/images/elixir_logo.png" alt="ELIXIR" style="height:56px; width:auto;">
-      </a>
-    </div>
-
   </div>
 
+  {{/* Všichni partneři a sponzoři, na každé stránce webu. */}}
+  {{ partial "partners.html" . }}
+
   <div class="d-flex justify-content-center small mt-2">
-    <small>This website was built using the <a href="https://gohugo.io" target="_blank">Hugo</a> static site generator and the <a href="https://github.com/sib-swiss/hugo-pathogens-portal" target="_blank">Pathogens Portal theme</a> developed by the <a href="https://www.sib.swiss" target="_blank">Swiss Institute of Bioinformatics</a>. If you're interested in rapidly deploying a Pathogens Portal Node for your country or region, please check the reference software implementation <a href="https://github.com/ScilifelabDataCentre/node-pathogens-portal" target="_blank">here</a>.</small>
+    <small>Web běží na generátoru <a href="https://gohugo.io" target="_blank">Hugo</a> s motivem <a href="https://github.com/sib-swiss/hugo-pathogens-portal" target="_blank">Pathogens Portal</a> od <a href="https://www.sib.swiss" target="_blank">Swiss Institute of Bioinformatics</a>. Referenční implementace národního Pathogens Portal uzlu je <a href="https://github.com/ScilifelabDataCentre/node-pathogens-portal" target="_blank">zde</a>.</small>
   </div>
 </footer>
 
@@ -97,7 +93,11 @@
     // first column ascending, which in curated tables destroys the order the
     // author chose — the "Major events" timeline sorted as text ("10. 7." before
     // "5. 5.") and the most important source ended up in the middle.
-    new DataTable('table', {
+    // ⛔ `table` bralo VŠECHNY tabulky na stránce, včetně těch, které si řídí
+    // vlastní skript. Tabulka signálů na titulce je zároveň přepínač mapy —
+    // DataTables ji stránkoval po 25 řádcích a klik na řádek pak mohl vybrat
+    // něco jiného, než na co uživatel klikl.
+    new DataTable('table:not([data-no-datatable])', {
       order: [],
       pageLength: 25,
       lengthMenu: [10, 25, 50, 100],

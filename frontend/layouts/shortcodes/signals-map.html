@@ -1,0 +1,11 @@
+{{/* Mapa signálů pro použití v obsahu.
+
+     Usage: {{< signals-map src="/data/charts/anomaly_signals.json" title="Titulek" >}}
+
+     Vlastní značkování je v partials/signals-map.html, protože tutéž mapu
+     vykresluje i titulní stránka (layouts/index.html), která shortcode volat nemůže.
+*/}}
+{{ partial "signals-map.html" (dict
+   "ctx"   .Page
+   "src"   (.Get "src")
+   "title" (.Get "title")) }}

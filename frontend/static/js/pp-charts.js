@@ -18,7 +18,99 @@
   var API_BASE = (window.PP_API_BASE || "").replace(/\/$/, "");
   var STATIC_DIR = "/data/charts/";
   var MAX_SERIES = 8; // počet slotů palety; devátá řada se skládá do „Ostatní"
-  var LOCALE = "cs-CZ";
+  var LOCALE = (document.documentElement.lang || "").indexOf("en") === 0 ? "en-GB" : "cs-CZ";
+
+  /* ---------------- Lokalizace ----------------
+   * Datové JSONy nesou české popisky (generuje je pipeline). Anglická verze
+   * webu je překládá tímhle slovníkem — je záměrně konečný: popisky, které
+   * v něm nejsou (např. 114 názvů ISIN diagnóz), zůstávají česky a stránky
+   * to přiznávají poznámkou. Trvalé řešení řeší pathogensportal-db#47.
+   */
+  var EN = (document.documentElement.lang || "").indexOf("en") === 0;
+  var CS_EN = {
+    "Nové případy (týden)": "New cases (week)",
+    "Úmrtí (týden)": "Deaths (week)",
+    "Úmrtí": "Deaths",
+    "Případy": "Cases",
+    "Hospitalizace": "Hospitalisations",
+    "Hospitalizovaní celkem": "Hospitalised, total",
+    "JIP": "ICU",
+    "UPV (plicní ventilace)": "Mechanical ventilation",
+    "ECMO": "ECMO",
+    "PCR pozitivita (%)": "PCR positivity (%)",
+    "7denní incidence / 100 000": "7-day incidence / 100,000",
+    "Hospitalizační míra (%)": "Hospitalisation rate (%)",
+    "Smrtnost (CFR %)": "Case fatality (CFR %)",
+    "Bez očkování": "Unvaccinated",
+    "Nedokončené očkování": "Incomplete vaccination",
+    "Dokončené očkování": "Complete vaccination",
+    "Posilující dávka": "Booster dose",
+    "Influenza A (celkem)": "Influenza A (total)",
+    "Coronavirus (sezónní)": "Coronavirus (seasonal)",
+    "Potvrzené případy (kumulativní)": "Confirmed cases (cumulative)",
+    "Potvrzená úmrtí (kumulativní)": "Confirmed deaths (cumulative)",
+    "Úmrtí mezi potvrzenými případy (kumulativní)": "Deaths among confirmed cases (cumulative)",
+    "Nově hlášené případy (den)": "Newly reported cases (day)",
+    "Západní Afrika 2014–2016": "West Africa 2014–2016",
+    "DRK 2012": "DRC 2012", "DRK 2018–2020": "DRC 2018–2020", "DRK 2020": "DRC 2020",
+    "DRK 2025": "DRC 2025", "DRK 2026": "DRC 2026",
+    "Praha + Stř. Čechy": "Prague + Central Bohemia",
+    "Den od prvního hlášeného případu": "Day since first reported case",
+    "den": "day",
+    "Období": "Period",
+    "Ostatní": "Other",
+    "Tabulka": "Table",
+    "Skrýt tabulku": "Hide table",
+    "Data grafu v tabulce": "Chart data as a table",
+    "živá data z databáze": "live data from the database",
+    "statický snímek dat": "static data snapshot",
+    "případů": "cases",
+    "Celkem nakažených": "Total cases",
+    "Celkem úmrtí": "Total deaths",
+    "Celkem testů": "Total tests",
+    "Smrtnost (CFR)": "Case fatality (CFR)",
+    "Diagnóza": "Diagnosis", "Kraj": "Region",
+    /* ⛔ Názvy sloupců jsou schválně lidské, ne statistické. „Očekáváno" a „Práh"
+       jsou správné termíny, ale čtenář z nich nepozná, co znamenají — a stránku
+       čte epidemiolog i novinář. Definice zůstávají v title a na stránce Signály. */
+    "Nahlášeno": "Reported", "Obvykle bývá": "Usually", "Ještě v normě do": "Still normal up to",
+    "Překročeno": "Exceeded by", "překročeno": "exceeded by",
+    "nahlášeno": "reported", "obvykle bývá": "usually", "ještě v normě do": "still normal up to",
+    "vzácná nemoc": "rare disease",
+    "mimo dosavadní výskyt": "outside prior occurrence",
+    "Řady nad očekávanou hladinou": "Series above the expected level",
+    "Období ": "Period ",
+    " · hodnoceno ": " · scored ",
+    " řad (diagnóza × kraj) · ": " series (diagnosis × region) · ",
+    " překročení": " exceedances",
+    " z nich čekáme čistou náhodou": " of them expected by chance alone",
+    "Žádná řada aktuálně nepřekračuje očekávanou hladinu.": "No series currently exceeds the expected level.",
+    "Zobrazit všech ": "Show all ",
+    "Zobrazit jen prvních ": "Show only the first ",
+    "Kolik případů bylo za daný měsíc skutečně nahlášeno": "How many cases were actually notified in the given month",
+    "Endemická hladina z modelu — běžný počet pro tuhle nemoc, kraj a roční dobu": "The model's endemic level — the usual count for this disease, region and time of year",
+    "Horní mez běžného kolísání (99. percentil); signál začíná nad ní": "Upper limit of ordinary fluctuation (99th percentile); a signal starts above it",
+    "Kolikrát pozorování překročilo vzdálenost od očekávání k prahu; 1× = přesně na prahu": "How many times the observation exceeded the expectation-to-threshold distance; 1× = exactly at the threshold",
+    "k ": "as of ",
+    "Data grafu se nepodařilo načíst": "Chart data could not be loaded",
+    "Souhrnná data nejsou k dispozici.": "Summary data is not available.",
+    "Souhrnná data se nepodařilo načíst.": "Summary data could not be loaded.",
+    "Data mapy se nepodařilo načíst.": "Map data could not be loaded.",
+    "Signály se nepodařilo načíst": "Signals could not be loaded"
+  };
+  function tr(text) {
+    if (!EN || text === null || text === undefined) return text;
+    return CS_EN[text] !== undefined ? CS_EN[text] : text;
+  }
+  /** Přeloží popisky v payloadu (na místě) — volá se hned po načtení dat. */
+  function localizePayload(payload) {
+    if (!EN || !payload) return payload;
+    (payload.datasets || []).forEach(function (d) { d.label = tr(d.label); });
+    if (payload.x_title) payload.x_title = tr(payload.x_title);
+    if (payload.x_unit) payload.x_unit = tr(payload.x_unit);
+    if (payload.unit) payload.unit = tr(payload.unit);
+    return payload;
+  }
 
   var nf = new Intl.NumberFormat(LOCALE);
   var nf1 = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 });
@@ -27,6 +119,18 @@
     if (value === null || value === undefined || value === "") return "—";
     if (typeof value !== "number") return String(value);
     return Number.isInteger(value) ? nf.format(value) : nf1.format(value);
+  }
+
+  /* Očekávaná hladina a práh se uvádějí v CELÝCH číslech — jsou to počty případů,
+     a desetinné místo u nich předstírá přesnost, kterou model nemá.
+     ⚠️ 20 ze 71 signálů má očekáváno pod 1 a část přesně 0. „Očekáváno 0" je
+     u nich SPRÁVNĚ: model nečeká prakticky nic a pozorovalo se sedm. Práh pod 1
+     neklesá nikdy, takže se nezaokrouhlí na nulu.
+     ⛔ Neplatí pro sílu (score) — tam je 18,9× vs 19× rozdíl, který nese význam. */
+  function fmtInt(value) {
+    if (value === null || value === undefined || value === "") return "—";
+    if (typeof value !== "number") return String(value);
+    return nf.format(Math.round(value));
   }
 
   /* ---------------- Design tokeny ---------------- */
@@ -101,7 +205,7 @@
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.json();
         })
-        .then(function (payload) { return { payload: payload, origin: "api" }; })
+        .then(function (payload) { return { payload: localizePayload(payload), origin: "api" }; })
         .catch(function () { return fetchStatic(src); });
     });
   }
@@ -112,7 +216,7 @@
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
-      .then(function (payload) { return { payload: payload, origin: "static" }; });
+      .then(function (payload) { return { payload: localizePayload(payload), origin: "static" }; });
   }
 
   /* ---------------- Úprava dat pro vykreslení ---------------- */
@@ -168,7 +272,7 @@
     }
 
     kept.push({
-      label: "Ostatní (" + folded.length + ")",
+      label: tr("Ostatní") + " (" + folded.length + ")",
       data: summed,
       type: folded[0] && folded[0].type,
       ppRest: true
@@ -381,7 +485,7 @@
    */
   function buildTable(payload, colorByLabel, t) {
     var datasets = payload.datasets || [];
-    var head = ['<tr><th scope="col">' + escapeHtml(payload.x_title || "Období") + "</th>"];
+    var head = ['<tr><th scope="col">' + escapeHtml(payload.x_title || tr("Období")) + "</th>"];
     datasets.forEach(function (d, i) {
       var label = d.label || "Řada " + (i + 1);
       head.push(
@@ -423,7 +527,7 @@
     }
 
     return (
-      '<table class="pp-table"><caption class="visually-hidden">Data grafu v tabulce</caption>' +
+      '<table class="pp-table"><caption class="visually-hidden">' + tr("Data grafu v tabulce") + '</caption>' +
       "<thead>" + head.join("") + "</thead><tbody>" + rows.join("") + "</tbody></table>"
     );
   }
@@ -439,7 +543,7 @@
     if (!el) return;
     var live = origin === "api";
     el.classList.toggle("pp-origin--live", live);
-    el.textContent = live ? "živá data z databáze" : "statický snímek dat";
+    el.textContent = live ? tr("živá data z databáze") : tr("statický snímek dat");
   }
 
   function showError(root, message) {
@@ -487,7 +591,7 @@
       .catch(function (err) {
         var skeleton = root.querySelector(".pp-skeleton");
         if (skeleton) skeleton.remove();
-        showError(root, "Data grafu se nepodařilo načíst (" + err.message + ").");
+        showError(root, tr("Data grafu se nepodařilo načíst") + " (" + err.message + ").");
       });
 
     var toggle = root.querySelector("[data-pp-table-toggle]");
@@ -497,7 +601,7 @@
         var open = wrap.getAttribute("data-open") === "true";
         wrap.setAttribute("data-open", open ? "false" : "true");
         toggle.setAttribute("aria-expanded", open ? "false" : "true");
-        toggle.textContent = open ? "Tabulka" : "Skrýt tabulku";
+        toggle.textContent = open ? tr("Tabulka") : tr("Skrýt tabulku");
       });
     }
   }
@@ -521,18 +625,18 @@
         }).map(function (field) {
           return (
             '<div class="pp-stat" style="--pp-stat-accent:' + t.series[field.slot - 1] + '">' +
-            '<div class="pp-stat__label">' + field.label + "</div>" +
+            '<div class="pp-stat__label">' + tr(field.label) + "</div>" +
             '<div class="pp-stat__value">' + fmt(data[field.key]) + (field.suffix || "") + "</div>" +
-            '<div class="pp-stat__note">k ' + escapeHtml(String(data.posledni_datum || "—")) + "</div>" +
+            '<div class="pp-stat__note">' + tr("k ") + escapeHtml(String(data.posledni_datum || "—")) + "</div>" +
             "</div>"
           );
         });
         root.innerHTML = tiles.join("") ||
-          '<div class="pp-error">Souhrnná data nejsou k dispozici.</div>';
+          '<div class="pp-error">' + tr("Souhrnná data nejsou k dispozici.") + '</div>';
         setOrigin(root.parentNode, result.origin);
       })
       .catch(function () {
-        root.innerHTML = '<div class="pp-error">Souhrnná data se nepodařilo načíst.</div>';
+        root.innerHTML = '<div class="pp-error">' + tr("Souhrnná data se nepodařilo načíst.") + '</div>';
       });
   }
 
@@ -561,7 +665,7 @@
         var labels = data.labels || {};
         // Co se vlastně počítá. Mapy incidence nesou "unit" v JSONu; bez něj
         // zůstává původní znění, aby se starší datové soubory chovaly stejně.
-        var unit = data.unit || "případů";
+        var unit = data.unit || tr("případů");
         var values = Object.keys(regions).map(function (code) { return regions[code]; })
           .filter(function (v) { return v > 0; });
         var min = Math.min.apply(null, values);
@@ -609,7 +713,95 @@
       })
       .catch(function () {
         root.innerHTML = '<div class="pp-error"><span aria-hidden="true">⚠</span>' +
-          "<span>Data mapy se nepodařilo načíst.</span></div>";
+          "<span>" + tr("Data mapy se nepodařilo načíst.") + "</span></div>";
+      });
+  }
+
+  /* ---------------- Signály detekce anomálií ---------------- */
+
+  var SIGNALS_PREVIEW = 20;   // řádků viditelných bez rozbalení
+  var NOMINAL_ALPHA = 0.01;   // 99. percentil — tolik překročení čekáme náhodou
+
+  /**
+   * Tabulka aktuálních překročení očekávané hladiny. Poctivost je tu součást
+   * návrhu: hlavička vždy říká, kolik překročení bychom při daném prahu čekali
+   * čistou náhodou — bez té věty by seznam vypadal jako seznam epidemií.
+   */
+  function renderSignals(root) {
+    var body = root.querySelector("[data-pp-signals-body]");
+
+    function typeBadge(s) {
+      if (s.type === "rare") return '<span class="badge text-bg-warning">' + tr("vzácná nemoc") + '</span>';
+      if (s.type === "sporadic") return '<span class="badge text-bg-warning">' + tr("mimo dosavadní výskyt") + '</span>';
+      return s.score !== null && s.score !== undefined ? fmt(s.score) + "×" : "—";
+    }
+
+    function draw(data) {
+      var signals = data.signals || [];
+      var expectedByChance = Math.round((data.n_series_scored || 0) * NOMINAL_ALPHA);
+      var html =
+        '<p class="pp-card__subtitle">' + tr("Období ") + '<strong>' + escapeHtml(String(data.target_period || "—")) +
+        "</strong>" + tr(" · hodnoceno ") + fmt(data.n_series_scored) + tr(" řad (diagnóza × kraj) · ") +
+        "<strong>" + fmt(signals.length) + tr(" překročení") + "</strong>" +
+        (expectedByChance ? " · ~" + fmt(expectedByChance) + tr(" z nich čekáme čistou náhodou") : "") +
+        "</p>";
+
+      if (!signals.length) {
+        body.innerHTML = html +
+          '<p class="pp-error" style="color:inherit">' + tr("Žádná řada aktuálně nepřekračuje očekávanou hladinu.") + '</p>';
+        return;
+      }
+
+      var rows = signals.map(function (s, i) {
+        return "<tr" + (i >= SIGNALS_PREVIEW ? ' hidden data-pp-signals-extra' : "") + ">" +
+          '<td class="text-end">' + (i + 1) + "</td>" +
+          "<td>" + escapeHtml(s.diagnoza_nazev || s.diagnoza || "?") + "</td>" +
+          "<td>" + escapeHtml(s.kraj_nazev || s.kraj_kod || "?") + "</td>" +
+          '<td class="text-end"><strong>' + fmt(s.observed) + "</strong></td>" +
+          '<td class="text-end">' + fmtInt(s.expected) + "</td>" +
+          '<td class="text-end">' + fmtInt(s.threshold) + "</td>" +
+          '<td class="text-end">' + typeBadge(s) + "</td>" +
+          "</tr>";
+      });
+
+      html += '<div style="overflow-x:auto"><table class="pp-table">' +
+        '<caption class="visually-hidden">' + tr("Řady nad očekávanou hladinou") + '</caption>' +
+        '<thead><tr><th scope="col">#</th><th scope="col">' + tr("Diagnóza") + '</th><th scope="col">' + tr("Kraj") + '</th>' +
+        '<th scope="col" class="text-end" title="' + tr("Kolik případů bylo za daný měsíc skutečně nahlášeno") + '">' + tr("Nahlášeno") + '</th>' +
+        '<th scope="col" class="text-end" title="' + tr("Kolik případů tahle nemoc v tomhle kraji a ročním období mívá v běžném roce") + '">' + tr("Obvykle bývá") + '</th>' +
+        '<th scope="col" class="text-end" title="' + tr("Do téhle hodnoty se počet ještě dá vysvětlit běžným kolísáním; nad ní začíná signál") + '">' + tr("Ještě v normě do") + '</th>' +
+        '<th scope="col" class="text-end" title="' + tr("Kolikrát dál za hranicí normy, než jak daleko je hranice od běžného stavu; 1× = přesně na hranici") + '">' + tr("Překročeno") + '</th></tr></thead>' +
+        "<tbody>" + rows.join("") + "</tbody></table></div>";
+
+      if (signals.length > SIGNALS_PREVIEW) {
+        html += '<button type="button" class="pp-btn mt-2" data-pp-signals-more aria-expanded="false">' +
+          tr("Zobrazit všech ") + fmt(signals.length) + "</button>";
+      }
+      body.innerHTML = html;
+
+      var more = body.querySelector("[data-pp-signals-more]");
+      if (more) {
+        more.addEventListener("click", function () {
+          var open = more.getAttribute("aria-expanded") === "true";
+          body.querySelectorAll("[data-pp-signals-extra]").forEach(function (tr) {
+            tr.hidden = open;
+          });
+          more.setAttribute("aria-expanded", open ? "false" : "true");
+          more.textContent = open
+            ? tr("Zobrazit všech ") + fmt(signals.length)
+            : tr("Zobrazit jen prvních ") + SIGNALS_PREVIEW;
+        });
+      }
+    }
+
+    loadChartData(root.dataset.src)
+      .then(function (result) {
+        setOrigin(root, result.origin);
+        draw(result.payload);
+      })
+      .catch(function (err) {
+        body.innerHTML = '<div class="pp-error"><span aria-hidden="true">⚠</span><span>' +
+          tr("Signály se nepodařilo načíst") + " (" + escapeHtml(err.message) + ").</span></div>";
       });
   }
 
@@ -625,6 +817,205 @@
     themeListeners.forEach(function (callback) { callback(); });
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-bs-theme"] });
 
+  /* ---------------- Signály: tabulka + mapa jedné diagnózy ---------------- */
+
+  /* Mapa neukazuje POČET signálů, ale JEDNU vybranou diagnózu: kraje se obarví
+     podle síly jejího signálu, kraje bez signálu zůstanou bílé. Tabulka vlevo je
+     výpis i přepínač; ve výchozím stavu je vybraný nejsilnější signál.
+
+     Čte tentýž anomaly_signals.json jako všechno ostatní kolem signálů — žádný
+     nový datový soubor, tedy ani změna v -db.
+
+     ⚠️ Řádky s kraj_kod === "CZ" NEJSOU součtem krajů; detect_anomalies.py je
+     počítá zvlášť nad celostátní řadou. Do mapy proto nejdou vůbec a zobrazují se
+     jako samostatná věta pod ní. */
+  function renderSignalMap(root) {
+    var svg     = root.querySelector("svg");
+    var tbody   = root.querySelector("[data-pp-signalmap-rows]");
+    var titleEl = root.querySelector("[data-pp-signalmap-title]");
+    var emptyEl = root.querySelector("[data-pp-signalmap-empty]");
+    var legend  = root.querySelector("[data-pp-signalmap-legend]");
+    var natEl   = root.querySelector("[data-pp-signalmap-national]");
+    var tooltip = root.querySelector(".pp-tooltip");
+    var mapBox  = root.querySelector(".pp-map");
+    if (!svg || !tbody || !mapBox) return;
+
+    loadChartData(root.dataset.src)
+      .then(function (result) {
+        var all = (result.payload || {}).signals || [];
+
+        /* Seskupení podle diagnózy. Klíčem je KÓD MKN-10, ne český název —
+           název je volný text a je to jediná věc, která se dá přejmenovat. */
+        var groups = {};
+        all.forEach(function (sig) {
+          var key = sig.diagnoza;
+          if (!groups[key]) {
+            groups[key] = { code: key, name: sig.diagnoza_nazev || key, regions: {}, national: null, max: 0 };
+          }
+          if (sig.kraj_kod === "CZ") { groups[key].national = sig; return; }
+          groups[key].regions[sig.kraj_kod] = sig;
+          if (sig.score > groups[key].max) groups[key].max = sig.score;
+        });
+
+        var order = Object.keys(groups).sort(function (a, b) {
+          return groups[b].max - groups[a].max;
+        });
+        if (!order.length) return;
+
+        var t = tokens();
+        var regionPaths = {};
+        svg.querySelectorAll("[data-region]").forEach(function (path) {
+          regionPaths[path.getAttribute("data-region")] = path;
+        });
+
+        function clearMap() {
+          Object.keys(regionPaths).forEach(function (code) {
+            var path = regionPaths[code];
+            /* ⛔ Bílá, ne „nejsvětlejší odstín škály". Kraj bez signálu není kraj
+               s nejnižší hodnotou — je to kraj, o kterém model nic netvrdí, a to
+               se nesmí splést s „skoro nic". */
+            path.style.fill = "#ffffff";
+            path.classList.remove("is-clickable");
+            path.removeAttribute("tabindex");
+            path.removeAttribute("aria-label");
+          });
+        }
+
+        var current = null;
+
+        function select(code, animate) {
+          var g = groups[code];
+          if (!g) return;
+          current = g;
+          /* Přepnutí pod otevřeným tooltipem by nechalo viset čísla staré
+             diagnózy, dokud myš neopustí kraj. */
+          tooltip.style.display = "none";
+
+          tbody.querySelectorAll("[data-dg]").forEach(function (row) {
+            var on = row.getAttribute("data-dg") === code;
+            row.classList.toggle("is-selected", on);
+            row.setAttribute("aria-selected", on ? "true" : "false");
+            if (on && animate) {
+              /* Restart animace: bez odebrání a vynuceného reflow se při druhém
+                 kliknutí na týž řádek nespustí znovu. */
+              row.classList.remove("is-flash");
+              void row.offsetWidth;
+              row.classList.add("is-flash");
+            }
+          });
+          if (animate) {
+            svg.classList.remove("is-switching");
+            void svg.offsetWidth;
+            svg.classList.add("is-switching");
+          }
+
+          titleEl.textContent = g.name;
+          clearMap();
+
+          var codes = Object.keys(g.regions);
+          /* ⚠️ `score` je null u signálů typu "rare" — u vzácných nemocí model sílu
+             nepočítá a stránka Signály to popisuje jako samostatný štítek. Bez
+             filtru by Math.min/max vrátily NaN a mixHex by dostal NaN poměr, takže
+             by se diagnóza složená jen z takových signálů vykreslila bez barev. */
+          var scores = codes.map(function (c) { return g.regions[c].score; })
+            .filter(function (v) { return typeof v === "number"; });
+          var min = scores.length ? Math.min.apply(null, scores) : 0;
+          var max = scores.length ? Math.max.apply(null, scores) : 0;
+
+          if (!codes.length) {
+            /* Diagnóza má jen celostátní signál, v žádném kraji ne. Mapa zůstane
+               bílá a řekne proč — prázdná mapa bez vysvětlení vypadá jako chyba. */
+            emptyEl.hidden = false;
+            emptyEl.textContent = tr("V žádném kraji tato diagnóza signál nemá.");
+            legend.hidden = true;
+          } else {
+            emptyEl.hidden = true;
+            legend.hidden = false;
+            legend.querySelector("[data-pp-min]").textContent = fmt(min);
+            legend.querySelector("[data-pp-max]").textContent = fmt(max);
+          }
+
+          codes.forEach(function (rc) {
+            var path = regionPaths[rc];
+            if (!path) return;
+            var sig = g.regions[rc];
+            var sc = typeof sig.score === "number" ? sig.score : min;
+            var ratio = max === min ? 1 : (sc - min) / (max - min);
+            path.style.fill = mixHex(t.seqLow, t.seqHigh, ratio);
+            path.classList.add("is-clickable");
+            path.setAttribute("tabindex", "0");
+            path.setAttribute("aria-label",
+              sig.kraj_nazev + ": " + tr("nahlášeno") + " " + fmt(sig.observed) +
+              ", " + tr("obvykle bývá") + " " + fmtInt(sig.expected) +
+              ", " + tr("ještě v normě do") + " " + fmtInt(sig.threshold));
+
+          });
+
+          if (g.national) {
+            natEl.hidden = false;
+            natEl.innerHTML = "<strong>" + tr("Celostátně") + ":</strong> " +
+              tr("nahlášeno") + " " + fmt(g.national.observed) + ", " +
+              tr("obvykle bývá") + " " + fmtInt(g.national.expected) + ", " +
+              tr("ještě v normě do") + " " + fmtInt(g.national.threshold) +
+              " — " + tr("překročeno") + " " + fmt(g.national.score) + "×";
+          } else {
+            natEl.hidden = true;
+          }
+        }
+
+        /* ⛔ Posluchače tooltipu se věší JEDNOU na kraj, ne při každém výběru.
+           Původně je věšel select(). clearMap() sice odebral barvu, třídu
+           `is-clickable` i aria-label, ale posluchače ne — takže po přepnutí
+           diagnózy ukazoval BÍLÝ kraj čísla té PŘEDCHOZÍ, a s každým dalším
+           přepnutím na něm přibyl další. Nahlášeno z náhledu: klik na nevybarvený
+           kraj u hepatitidy A vrátil data, která tam neměla co dělat.
+
+           Handler si sáhne na `current` až při spuštění, takže vždycky odpovídá
+           tomu, co je zrovna vybrané. Kraj bez signálu nezobrazí nic. */
+        Object.keys(regionPaths).forEach(function (rc) {
+          var path = regionPaths[rc];
+
+          function show(event) {
+            var sig = current && current.regions[rc];
+            if (!sig) { tooltip.style.display = "none"; return; }
+            tooltip.style.display = "block";
+            tooltip.innerHTML =
+              "<strong>" + escapeHtml(sig.kraj_nazev) + "</strong><br>" +
+              tr("nahlášeno") + ": " + fmt(sig.observed) + "<br>" +
+              tr("obvykle bývá") + ": " + fmtInt(sig.expected) + "<br>" +
+              tr("ještě v normě do") + ": " + fmtInt(sig.threshold) + "<br>" +
+              tr("překročeno") + " " + fmt(sig.score) + "×";
+            var rect = mapBox.getBoundingClientRect();
+            var x = event.clientX !== undefined ? event.clientX : rect.left + rect.width / 2;
+            var y = event.clientY !== undefined ? event.clientY : rect.top;
+            var left = x - rect.left + 14;
+            if (left + 170 > rect.width) left = Math.max(4, x - rect.left - 180);
+            tooltip.style.left = left + "px";
+            tooltip.style.top = Math.max(4, y - rect.top - 78) + "px";
+          }
+          function hide() { tooltip.style.display = "none"; }
+
+          path.addEventListener("mouseenter", show);
+          path.addEventListener("mousemove", show);
+          path.addEventListener("focus", show);
+          path.addEventListener("mouseleave", hide);
+          path.addEventListener("blur", hide);
+        });
+
+        /* Jsou to <button>, takže tabindex, role ani obsluha Enter/mezerníku
+           nejsou potřeba — prohlížeč to umí sám a líp. */
+        tbody.querySelectorAll("[data-dg]").forEach(function (btn) {
+          btn.addEventListener("click", function () { select(btn.getAttribute("data-dg"), true); });
+        });
+
+        select(order[0]);
+      })
+      .catch(function () {
+        var host = root.querySelector("[data-pp-signalmap-title]");
+        if (host) host.textContent = tr("Data signálů se nepodařilo načíst.");
+      });
+  }
+
   /* ---------------- Start ---------------- */
 
   function init() {
@@ -636,6 +1027,8 @@
     }
     document.querySelectorAll("[data-pp-stats]").forEach(renderStats);
     document.querySelectorAll("[data-pp-map]").forEach(renderMap);
+    document.querySelectorAll("[data-pp-signals]").forEach(renderSignals);
+    document.querySelectorAll("[data-pp-signalmap]").forEach(renderSignalMap);
   }
 
   if (document.readyState === "loading") {
