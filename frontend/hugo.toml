@@ -29,7 +29,19 @@ enableRobotsTXT = true
   # a secret — it appears in the page source of every visitor. What IS sensitive
   # is the Umami login, which is not here and never should be.
   [params.analytics]
-    website_id = ""
+    # ⛔ The host this ID belongs to. The tracker is emitted ONLY when the site
+    # being built is actually this machine — `baseURL` is derived from
+    # STAGING_HOST / PRODUCTION_HOST at deploy time, so production builds itself
+    # with a different host and ships no tracker even though it carries this same
+    # config. That is deliberate: it means the ID does NOT have to be deleted on
+    # the way to `main`, and dev/main do not diverge in this file.
+    #
+    # Analytics is per machine — a second Umami on production would be a separate
+    # instance with a separate ID. Pointing production at THIS id would file
+    # production's visitors under staging: numbers that exist and are wrong,
+    # which is worse than no numbers at all.
+    host = "pathogens-dev.vm.cesnet.cz"
+    website_id = "d1dc6fc0-e043-4089-b4f5-ebdad26e9f88"
     # Same-origin path served by the Apache /stats/ proxy. A third-party host
     # here would be blocked by ad blockers and would defeat the point.
     script_url = "/stats/script.js"

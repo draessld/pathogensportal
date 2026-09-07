@@ -35,9 +35,13 @@
     {{ end }}
 
     {{/* ── Visitor statistics (Umami, self-hosted) ─────────────────────────────
-         Emitted ONLY when params.analytics.website_id is set, so a site without
-         it — a local build, a PR preview, production before this is decided —
-         ships no tracker at all rather than a broken one.
+         Emitted ONLY when the site being built IS the machine the id belongs
+         to: `baseURL` is derived from STAGING_HOST / PRODUCTION_HOST at deploy
+         time, so this one test excludes production, local builds (hugo.toml
+         hardcodes the production URL) and `hugo server` — without any of them
+         needing a different config. A PR preview is excluded by the path test:
+         it builds on the staging HOST but under /preview/pr-N/, and counting it
+         would mix our own review traffic into the readership figures.
 
          Cookieless and first-party by design:
            · no cookie, nothing stored on the reader's device, so no consent
@@ -51,7 +55,8 @@
          script reads data-website-id off its own tag. Renaming them silently
          collects nothing. */}}
     {{ with .Site.Params.analytics }}
-    {{ if .website_id }}
+    {{ $u := urls.Parse $.Site.BaseURL }}
+    {{ if and .website_id .host (eq $u.Host .host) (in (slice "" "/") $u.Path) }}
     <script defer
             src="{{ .script_url | default "/stats/script.js" }}"
             data-website-id="{{ .website_id }}"
