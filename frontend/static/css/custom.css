@@ -252,3 +252,10 @@
   .pp-privacy { flex-direction: column; align-items: flex-start; }
   .pp-privacy__actions { align-self: stretch; justify-content: flex-end; }
 }
+.pp-privacy-dialog__tools { display: flex; align-items: center; gap: .5rem; }
+.pp-privacy-dialog__lang {
+  background: none; border: 1px solid #e2e1dc; border-radius: 6px;
+  padding: .12rem .55rem; font: inherit; font-size: .78rem;
+  color: #52514e; cursor: pointer; white-space: nowrap;
+}
+.pp-privacy-dialog__lang:hover { background: #f2f1ee; color: #0b0b0b; }
