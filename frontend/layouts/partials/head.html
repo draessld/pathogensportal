@@ -35,13 +35,13 @@
     {{ end }}
 
     {{/* ── Visitor statistics (Umami, self-hosted) ─────────────────────────────
-         Emitted ONLY when the site being built IS the machine the id belongs
-         to: `baseURL` is derived from STAGING_HOST / PRODUCTION_HOST at deploy
-         time, so this one test excludes production, local builds (hugo.toml
-         hardcodes the production URL) and `hugo server` — without any of them
-         needing a different config. A PR preview is excluded by the path test:
-         it builds on the staging HOST but under /preview/pr-N/, and counting it
-         would mix our own review traffic into the readership figures.
+         Each machine has its OWN Umami and its own id, so the id is looked up
+         by the host being built for — `baseURL` comes from STAGING_HOST /
+         PRODUCTION_HOST at deploy time. A host with no entry emits nothing,
+         which is what excludes local builds and `hugo server`. A PR preview is
+         excluded by the path test: it builds on the staging HOST but under
+         /preview/pr-N/, and counting it would mix our own review traffic into
+         the readership figures.
 
          Cookieless and first-party by design:
            · no cookie, nothing stored on the reader's device, so no consent
@@ -56,10 +56,11 @@
          collects nothing. */}}
     {{ with .Site.Params.analytics }}
     {{ $u := urls.Parse $.Site.BaseURL }}
-    {{ if and .website_id .host (eq $u.Host .host) (in (slice "" "/") $u.Path) }}
+    {{ $id := index (.hosts | default dict) $u.Host }}
+    {{ if and $id (in (slice "" "/") $u.Path) }}
     <script defer
             src="{{ .script_url | default "/stats/script.js" }}"
-            data-website-id="{{ .website_id }}"
+            data-website-id="{{ $id }}"
             {{ with .host_url }}data-host-url="{{ . }}"{{ end }}></script>
     {{ end }}
     {{ end }}

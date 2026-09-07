@@ -29,22 +29,30 @@ enableRobotsTXT = true
   # a secret — it appears in the page source of every visitor. What IS sensitive
   # is the Umami login, which is not here and never should be.
   [params.analytics]
-    # ⛔ The host this ID belongs to. The tracker is emitted ONLY when the site
-    # being built is actually this machine — `baseURL` is derived from
-    # STAGING_HOST / PRODUCTION_HOST at deploy time, so production builds itself
-    # with a different host and ships no tracker even though it carries this same
-    # config. That is deliberate: it means the ID does NOT have to be deleted on
-    # the way to `main`, and dev/main do not diverge in this file.
-    #
-    # Analytics is per machine — a second Umami on production would be a separate
-    # instance with a separate ID. Pointing production at THIS id would file
-    # production's visitors under staging: numbers that exist and are wrong,
-    # which is worse than no numbers at all.
-    host = "pathogens-dev.vm.cesnet.cz"
-    website_id = "d1dc6fc0-e043-4089-b4f5-ebdad26e9f88"
     # Same-origin path served by the Apache /stats/ proxy. A third-party host
     # here would be blocked by ad blockers and would defeat the point.
     script_url = "/stats/script.js"
+
+    # ── One id per machine, keyed by the host it belongs to ──────────────────
+    # Each machine runs its OWN Umami with its own database, so an id is only
+    # meaningful on the machine that issued it. The build picks the entry
+    # matching the host it is building for — `baseURL` comes from STAGING_HOST /
+    # PRODUCTION_HOST at deploy time — and emits nothing when there is no match.
+    #
+    # ⛔ This is why the file does NOT differ between `dev` and `main`. Keeping a
+    # single id here and deleting it on the way to main would be a rule enforced
+    # by a comment; this is enforced by the build. A host with no entry (a local
+    # build, a PR preview, a new machine) ships no tracker rather than a wrong one.
+    #
+    # ⚠️ Sending production's visitors to staging's id would produce numbers that
+    # exist and are wrong — worse than no numbers. That is the failure this shape
+    # prevents.
+    #
+    # ⛔ Must stay the LAST thing in [params.analytics]: a TOML sub-table header
+    # swallows every key after it, so a plain key added below would land in here.
+    [params.analytics.hosts]
+      "pathogens-dev.vm.cesnet.cz" = "d1dc6fc0-e043-4089-b4f5-ebdad26e9f88"
+      "pathogens.vm.cesnet.cz" = "368bbdc4-e019-4134-add7-d6b5a1bd6e9f"
 
 # ⛔ Menu entries use `pageRef`, never `url`. A menu entry's `url` is emitted
 # verbatim and Hugo does NOT prefix it with the language, even inside
