@@ -82,23 +82,29 @@
   {{ with $dash }}
   <section class="pp-home-cards mb-5">
     <div class="pp-home-sec-head">
-      <h2>{{ cond $en "Dashboards" "Dashboardy" }}</h2>
+      <h2>{{ cond $en "Latest dashboards" "Nejnovější dashboardy" }}</h2>
       <a class="pp-home-more" href="{{ .RelPermalink }}">{{ cond $en "All dashboards" "Všechny dashboardy" }} <i class="bi bi-arrow-right-short"></i></a>
     </div>
 
     <div class="pp-home-dash-grid">
     <div class="pp-home-dash-main">
-    <label class="pp-home-filter">
-      <i class="bi bi-funnel" aria-hidden="true"></i>
-      <input type="search" id="pp-index-filter" autocomplete="off"
-             placeholder="{{ cond $en "Filter by name, topic or tag…" "Filtrovat podle názvu, tématu nebo tagu…" }}"
-             aria-label="{{ cond $en "Filter the dashboards" "Filtrovat dashboardy" }}">
-    </label>
+    {{/* ⛔ Řadí se podle .Lastmod, což je díky enableGitInfo datum posledního
+         commitu nad souborem. Bez toho přepínače je .Lastmod u VŠECH dashboardů
+         nulový (žádný nemá `date:` v hlavičce) a tohle by tiše vracelo pořadí
+         podle ničeho.
 
-    <ul class="pp-home-cardgrid" id="pp-index-list">
-      {{ range .Pages.ByTitle }}
-      <li class="pp-home-card"
-          data-hay="{{ lower (printf "%s %s %s" .Title (.Description | default "") (delimit (.Params.tags | default slice) " ")) }}">
+         ⚠️ Datum se na kartě záměrně NEVYPISUJE. Je to datum úpravy STRÁNKY, ne
+         čerstvost dat — grafy se plní z JSONu, který přegenerovává pipeline,
+         takže „Aktualizováno 5. 9." vedle živého grafu by čtenáře nechalo
+         věřit, že data jsou z 5. 9. Pořadí to nese, tvrzení ne.
+
+         ⚠️ Dnes to rozliší jen dvě položky: sedm z devíti dashboardů se
+         naposledy změnilo jedním hromadným commitem, takže sdílejí datum a
+         jejich vzájemné pořadí je libovolné. Rozejde se, jak se budou upravovat
+         po jednom. */}}
+    <ul class="pp-home-cardgrid">
+      {{ range first 6 .Pages.ByLastmod.Reverse }}
+      <li class="pp-home-card">
         <a class="pp-home-card__link" href="{{ if .Params.redirect_url }}{{ .Params.redirect_url }}{{ else }}{{ .RelPermalink }}{{ end }}">
           {{/* Obrázek je dekorace: název i popis jsou hned pod ním jako text,
                takže prázdný alt je správně, ne opomenutí. */}}
@@ -113,9 +119,6 @@
       </li>
       {{ end }}
     </ul>
-    <p class="pp-home-index-empty" id="pp-index-empty" hidden>
-      {{ cond $en "Nothing matches that." "Tomu nic neodpovídá." }}
-    </p>
     </div>
 
 {{- $visible := slice -}}
@@ -175,25 +178,4 @@
 
 </div>
 
-{{/* Filtr karet. Vanilla, ~15 řádků, žádná knihovna — viz PP-7.
-     Bez JS zůstane mřížka celá viditelná, což je použitelný stav. */}}
-<script>
-(function () {
-  var input = document.getElementById('pp-index-filter');
-  var list  = document.getElementById('pp-index-list');
-  var empty = document.getElementById('pp-index-empty');
-  if (!input || !list) return;
-  var items = Array.prototype.slice.call(list.querySelectorAll('.pp-home-card'));
-  input.addEventListener('input', function () {
-    var q = input.value.trim().toLowerCase();
-    var shown = 0;
-    items.forEach(function (li) {
-      var hit = !q || (li.dataset.hay || '').indexOf(q) !== -1;
-      li.hidden = !hit;
-      if (hit) shown++;
-    });
-    if (empty) empty.hidden = shown !== 0;
-  });
-})();
-</script>
 {{ end }}

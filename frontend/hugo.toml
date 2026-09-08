@@ -5,6 +5,27 @@ defaultContentLanguage = "cs"
 defaultContentLanguageInSubdir = false
 enableRobotsTXT = true
 
+# ⛔ Zdroj .Lastmod, podle kterého titulka řadí karty. Bez tohohle je .Lastmod
+# u VŠECH dashboardů nulový — žádný nemá v hlavičce `date:` — a řazení „podle
+# data úpravy" by vracelo pořadí podle ničeho, které vypadá, že funguje.
+#
+# ⚠️ Vyžaduje PLNOU historii při buildu. Oba deploye mají `fetch-depth: 0`;
+# preview workflow ho dostalo dopsané ve stejné změně. Na mělkém klonu dostane
+# každý soubor datum jediného commitu a pořadí se tiše sesype do jednoho data.
+enableGitInfo = true
+
+# ⛔ `lastmod` a `date` z hlavičky PŘED gitem. Výchozí pořadí Hugo dává :git
+# první, jenže datum z gitu tady neznamená „kdy se obsah změnil": squash-merge
+# PR #62 (7. 9. 2026) sáhl na 123 souborů najednou, takže osm z devíti
+# dashboardů má identické datum, a datová pipeline commituje do content/
+# sama (123 commitů od 1. 9., 7 z nich do dashboardů). Řazení podle gitu proto
+# míchá „úpravu textu" s „proběhl robot".
+#
+# S tímhle pořadím stačí do hlavičky dashboardu dopsat `date:` a ten výsledek
+# přebije. Git zůstává jako záchranná síť pro stránky bez data.
+[frontmatter]
+  lastmod = ['lastmod', 'date', ':git', ':default']
+
 [params]
   mail = "hpaces@img.cas.cz"
   # Výchozí náhledový obrázek pro sdílení (og:image / twitter:image)
