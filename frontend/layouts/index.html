@@ -104,7 +104,9 @@
          po jednom. */}}
     <ul class="pp-home-cardgrid">
       {{ range first 6 .Pages.ByLastmod.Reverse }}
-      <li class="pp-home-card">
+      {{ $m := partial "origin-meta.html" . }}
+      <li class="pp-home-card{{ with $m }} pp-origin-edge pp-origin-edge--{{ .key }}{{ end }}"
+          {{ with $m }}title="{{ .label }} — {{ .title }}"{{ end }}>
         <a class="pp-home-card__link" href="{{ if .Params.redirect_url }}{{ .Params.redirect_url }}{{ else }}{{ .RelPermalink }}{{ end }}">
           {{/* Obrázek je dekorace: název i popis jsou hned pod ním jako text,
                takže prázdný alt je správně, ne opomenutí. */}}
@@ -120,10 +122,16 @@
           </span>
           <span class="pp-home-card__title">{{ .Title }}</span>
         </a>
+        {{/* ⚠️ Původ už není vidět jako štítek, ale je pořád ČITELNÝ: v `title`
+             karty a tady ve skrytém textu. Samotná barva rámečku je pro
+             barvoslepé čtenáře i pro odečítač obrazovky nula informace, a
+             legenda je na jiné stránce. */}}
+        {{ with $m }}<span class="visually-hidden">{{ .label }}</span>{{ end }}
+        {{ if .Params.redirect_url }}
         <div class="pp-home-card__meta">
-          {{ with partial "origin-badge.html" (dict "page" . "size" "sm") }}{{ . }}{{ end }}
-          {{ if .Params.redirect_url }}<span class="pp-origin-badge pp-origin-badge--sm" style="color:#77766f;background:#f2f1ee">{{ cond $en "external" "externí" }} <i class="bi bi-box-arrow-up-right"></i></span>{{ end }}
+          <span class="pp-origin-badge pp-origin-badge--sm" style="color:var(--pp-text-muted);background:var(--pp-grid)">{{ cond $en "external" "externí" }} <i class="bi bi-box-arrow-up-right"></i></span>
         </div>
+        {{ end }}
         {{/* ⛔ Bez popisu. Po zmenšení karet na 1,5× se do tří řádků nevešel
              ANI JEDEN z šesti popisů — všechny by končily uprostřed věty. Malá
              karta je obrázek + název + původ; souvislý text patří na
@@ -156,12 +164,6 @@
     </aside>
     </div>
 
-    {{/* Legenda — barva bez legendy je nedešifrovatelná. */}}
-    <div class="pp-origin-legend mt-3">
-      <span class="pp-origin-legend__item"><span class="pp-origin-badge pp-origin-badge--aggregated pp-origin-badge--sm"><i class="bi bi-diagram-3"></i>{{ cond $en "Public source" "Veřejný zdroj" }}</span> {{ cond $en "collected by the portal" "portál je jen shromažďuje" }}</span>
-      <span class="pp-origin-legend__item"><span class="pp-origin-badge pp-origin-badge--own pp-origin-badge--sm"><i class="bi bi-award"></i>{{ cond $en "Our data" "Naše data" }}</span> {{ cond $en "produced or processed by us" "vznikla u nás nebo je zpracováváme" }}</span>
-      <span class="pp-origin-legend__item"><span class="pp-origin-badge pp-origin-badge--ai-assisted pp-origin-badge--sm"><i class="bi bi-robot"></i>{{ cond $en "AI-processed" "Zpracováno AI"}}</span> {{ cond $en "written by an AI agent, expert-reviewed" "sepsala AI, prošlo odbornou revizí" }}</span>
-    </div>
   </section>
   {{ end }}
 

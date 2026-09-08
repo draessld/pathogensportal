@@ -1,7 +1,10 @@
 {{/* Override theme šablony: relLangURL prefixuje statické obrázky jazykem
      (/en/images/…), který neexistuje — statika je společná. */}}
+{{ $m := partial "origin-meta.html" .Page }}
 <div class="col p-2">
-    <div class="bg-dashboard">
+    <div class="bg-dashboard{{ with $m }} pp-origin-edge pp-origin-edge--{{ .key }}{{ end }}"
+         {{ with $m }}title="{{ .label }} — {{ .title }}"{{ end }}>
+        {{ with $m }}<span class="visually-hidden">{{ .label }}</span>{{ end }}
         <div aria-hidden="true">
             <a href="{{ if .Page.Params.redirect_url }}{{ .Page.Params.redirect_url }}{{ else }}{{ .Page.RelPermalink }}{{ end }}">
                 {{/* Přes card-image.html, ať mají karty tady i na titulce stejný
@@ -21,12 +24,6 @@
         <div class="p-2">
             {{ .Page.Description }}
         </div>
-        {{/* Původ dat (PP-57) — na kartě, protože rozhodnutí „otevřu tohle?"
-             padá tady, ne až na cílové stránce. Nikdy jako osa řazení: čtenář
-             naviguje podle nemoci, ne podle toho, odkud data jsou. */}}
-        {{ with partial "origin-badge.html" (dict "page" .Page "size" "sm") }}
-        <div class="px-2 pb-1">{{ . }}</div>
-        {{ end }}
         <div class="px-2 pb-3">
             {{ range .Page.Params.tags }}
             <span class="topic_badge_small"><a href="{{ (printf "/tags/%s/" (urlize .)) | relLangURL }}">{{ . }}</a></span>

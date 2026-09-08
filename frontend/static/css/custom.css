@@ -339,3 +339,49 @@
   pointer-events: none;
 }
 .pp-ai-mark i { font-size: .66rem; }
+
+/* ── Původ dat jako barva rámečku karty ───────────────────────────────────
+   Nahrazuje slovní štítek na kartách ve výpisech (8. 9. 2026).
+
+   ⛔ Barva tu stojí SAMA, což je vědomý ústupek vzhledu a má svou cenu:
+   barvoslepý čtenář z ní nepozná nic a odečítač obrazovky barvu nečte vůbec.
+   Proto karta nese původ i v `title` a ve skrytém textu, a proto je na
+   /dashboards/ legenda. Kdyby ta legenda zmizela, rámečky přestanou cokoli
+   znamenat — nerozbijí se, jen zůstanou dekorací.
+
+   ⚠️ Musí být ZA pravidly motivu: .bg-dashboard má natvrdo modrý okraj
+   #295986. custom.css se načítá po theme.css, takže při stejné specifičnosti
+   vyhrává tohle. Kdyby se pořadí načítání změnilo, rámečky tiše zmodrají. */
+.pp-origin-edge { border-style: solid; border-width: 2px; }
+.pp-origin-edge--aggregated  { border-color: var(--pp-origin-aggregated); }
+.pp-origin-edge--own         { border-color: var(--pp-origin-own); }
+.pp-origin-edge--ai-assisted { border-color: var(--pp-origin-ai); }
+/* Hover nesmí barvu původu přebít — je to informace, ne dekorace. */
+.pp-home-card.pp-origin-edge:hover { border-color: inherit; }
+.pp-home-card.pp-origin-edge--aggregated:hover  { border-color: var(--pp-origin-aggregated); }
+.pp-home-card.pp-origin-edge--own:hover         { border-color: var(--pp-origin-own); }
+.pp-home-card.pp-origin-edge--ai-assisted:hover { border-color: var(--pp-origin-ai); }
+
+/* ── Legenda k barvám — JEN na /dashboards/ ──────────────────────────────── */
+.pp-origin-legend--page {
+  border: 1px solid var(--pp-border);
+  border-radius: 10px;
+  background: var(--pp-surface);
+  padding: 1rem 1.15rem 1.15rem;
+  display: block;
+}
+.pp-origin-legend__head { font-size: 1.05rem; margin: 0; }
+.pp-origin-legend__lead { margin: .15rem 0 .85rem; font-size: .85rem; color: var(--pp-text-muted); }
+.pp-origin-legend__items {
+  display: grid; gap: .7rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.pp-origin-legend--page .pp-origin-legend__item {
+  display: flex; align-items: flex-start; gap: .6rem; font-size: .88rem;
+}
+.pp-origin-legend__swatch {
+  flex: 0 0 auto; width: 1.5rem; height: 1.5rem;
+  border-radius: 5px; border-style: solid; border-width: 2px;
+  background: var(--pp-surface-raised); margin-top: .1rem;
+}
+.pp-origin-legend__desc { display: block; color: var(--pp-text-secondary); line-height: 1.4; }
