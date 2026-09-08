@@ -115,7 +115,10 @@
           {{ with partial "origin-badge.html" (dict "page" . "size" "sm") }}{{ . }}{{ end }}
           {{ if .Params.redirect_url }}<span class="pp-origin-badge pp-origin-badge--sm" style="color:#77766f;background:#f2f1ee">{{ cond $en "external" "externí" }} <i class="bi bi-box-arrow-up-right"></i></span>{{ end }}
         </div>
-        {{ with .Description }}<p class="pp-home-card__desc">{{ . }}</p>{{ end }}
+        {{/* ⛔ Bez popisu. Po zmenšení karet na 1,5× se do tří řádků nevešel
+             ANI JEDEN z šesti popisů — všechny by končily uprostřed věty. Malá
+             karta je obrázek + název + původ; souvislý text patří na
+             /dashboards/, kde jsou karty velké, a na cílovou stránku. */}}
       </li>
       {{ end }}
     </ul>

@@ -288,8 +288,11 @@
    rozjedou i řádky pod nimi. */
 .pp-home-cardgrid {
   list-style: none; padding: 0; margin: .75rem 0 0;
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: .75rem;
+  /* 10rem = 15rem / 1.5. Obrázek se zmenší sám (drží aspect-ratio), text ne —
+     proto jsou písmo i odsazení níž zmenšené ve stejném poměru. Jinak by na
+     menší kartě text vyrostl vůči obrázku a karta by přestala být obrázková. */
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: .6rem;
 }
 .pp-home-card {
   display: flex; flex-direction: column;
@@ -304,12 +307,10 @@
   object-fit: cover; background: var(--pp-grid);
 }
 .pp-home-card__title {
-  display: block; font-weight: 600; line-height: 1.3;
-  padding: .6rem .7rem .3rem;
+  display: block; font-weight: 600; line-height: 1.25;
+  font-size: .88rem;
+  padding: .45rem .5rem .2rem;
 }
-.pp-home-card__meta { padding: 0 .7rem; display: flex; flex-wrap: wrap; gap: .3rem; }
-.pp-home-card__desc {
-  margin: .35rem 0 0; padding: 0 .7rem .7rem;
-  font-size: .84rem; color: var(--pp-text-secondary); line-height: 1.4;
-}
+.pp-home-card__meta { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: .25rem; }
+.pp-home-card__meta:last-child { padding-bottom: .5rem; }
 
