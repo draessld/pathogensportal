@@ -34,15 +34,22 @@
   --pp-origin-ai: #5b46bd;
   --pp-origin-ai-bg: #eeebfa;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --pp-origin-aggregated: #7fb4f0;
-    --pp-origin-aggregated-bg: #16283d;
-    --pp-origin-own: #6cc9a1;
-    --pp-origin-own-bg: #143024;
-    --pp-origin-ai: #b4a4f3;
-    --pp-origin-ai-bg: #221d3a;
-  }
+/* ⛔ Spínač je [data-bs-theme="dark"], NE prefers-color-scheme. Zbytek webu
+   (dashboards.css, tokeny --pp-surface a spol.) se přepíná tímhle atributem,
+   takže tenhle blok na prefers-color-scheme obarvoval štítky natmavo podle
+   NASTAVENÍ OS, zatímco stránka kolem nich zůstala světlá — tmavé ostrůvky na
+   bílé. Dva spínače pro jednu věc nejsou volba, jsou chyba.
+
+   ⚠️ data-bs-theme dnes nikdo nenastavuje (pp-charts.js ho jen pozoruje), takže
+   tenhle blok je zatím neaktivní. To je záměr: web je světlý, dokud někdo tmavý
+   režim vědomě nezapne, a pak se přepne CELÝ. */
+[data-bs-theme="dark"] {
+  --pp-origin-aggregated: #7fb4f0;
+  --pp-origin-aggregated-bg: #16283d;
+  --pp-origin-own: #6cc9a1;
+  --pp-origin-own-bg: #143024;
+  --pp-origin-ai: #b4a4f3;
+  --pp-origin-ai-bg: #221d3a;
 }
 
 .pp-origin-badge {
@@ -83,34 +90,32 @@
 .pp-home-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .pp-home-sec-head h2 { margin: 0 0 .25rem; font-size: 1.35rem; }
 .pp-home-more { white-space: nowrap; font-size: .9rem; text-decoration: none; }
-.pp-home-sub { color: #77766f; font-size: .875rem; margin: 0 0 .75rem; }
+.pp-home-sub { color: var(--pp-text-muted); font-size: .875rem; margin: 0 0 .75rem; }
 
 /* Signály */
-.pp-home-signal-list { display: grid; gap: .4rem; }
 
 /* Novinky */
 .pp-home-news-list { display: grid; gap: .4rem; }
 .pp-home-news-item {
   display: grid; grid-template-columns: 7.5rem 1fr; gap: .25rem .85rem; align-items: baseline;
-  padding: .55rem .85rem; border: 1px solid #e2e1dc; border-radius: 10px;
-  background: #fff; text-decoration: none; color: inherit;
+  padding: .55rem .85rem; border: 1px solid var(--pp-border); border-radius: 10px;
+  background: var(--pp-surface-raised); text-decoration: none; color: inherit;
 }
-.pp-home-news-item:hover { border-color: #c9c8c1; background: #fcfcfb; }
-.pp-home-news-item__date { color: #77766f; font-size: .82rem; font-variant-numeric: tabular-nums; }
+.pp-home-news-item:hover { border-color: var(--pp-border-strong); background: var(--pp-surface); }
+.pp-home-news-item__date { color: var(--pp-text-muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
 .pp-home-news-item__title { font-weight: 600; }
-.pp-home-news-item__desc { grid-column: 2; color: #52514e; font-size: .85rem; }
+.pp-home-news-item__desc { grid-column: 2; color: var(--pp-text-secondary); font-size: .85rem; }
 
 /* Rejstřík */
 .pp-home-filter {
   display: flex; align-items: center; gap: .5rem; margin: .25rem 0 .85rem;
   padding: .45rem .75rem; border: 1px solid #e2e1dc; border-radius: 999px; background: #fff; max-width: 30rem;
 }
-.pp-home-filter i { color: #77766f; }
+.pp-home-filter i { color: var(--pp-text-muted); }
 .pp-home-filter input { border: 0; outline: 0; flex: 1; background: transparent; font-size: .95rem; }
-.pp-home-index-empty { color: #77766f; font-size: .9rem; padding: .5rem 0; }
+.pp-home-index-empty { color: var(--pp-text-muted); font-size: .9rem; padding: .5rem 0; }
 
 @media (max-width: 576px) {
-  .pp-home-signal { grid-template-columns: auto 1fr; }
   .pp-home-news-item { grid-template-columns: 1fr; }
   .pp-home-news-item__desc { grid-column: 1; }
 }
@@ -153,32 +158,36 @@
   align-items: start;
 }
 .pp-home-topics {
-  border: 1px solid #e2e1dc;
+  border: 1px solid var(--pp-border);
   border-radius: 10px;
-  background: #fcfcfb;
+  background: var(--pp-surface);
   padding: .85rem 1rem;
   position: sticky;
   top: 1rem;
 }
 .pp-home-topics h3 { margin: 0; font-size: 1rem; }
-.pp-home-topics__lead { margin: .1rem 0 .6rem; font-size: .78rem; color: #77766f; }
+.pp-home-topics__lead { margin: .1rem 0 .6rem; font-size: .78rem; color: var(--pp-text-muted); }
 .pp-home-topics__list { display: flex; flex-wrap: wrap; gap: .35rem; }
 .pp-home-topic {
   display: inline-block;
   padding: .12rem .55rem;
-  border: 1px solid #e2e1dc;
+  border: 1px solid var(--pp-border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--pp-surface-raised);
   font-size: .8rem;
   text-decoration: none;
-  color: #52514e;
+  color: var(--pp-text-secondary);
   transition: background-color .15s, border-color .15s, color .15s;
 }
+/* ⛔ Neutrální, ne modrá. Tenhle hover měl přesně hodnoty
+   --pp-origin-aggregated / -bg, tedy barvu, která na téže stránce znamená
+   „Veřejný zdroj" — a její legenda visí pár řádků nad pásem témat. Téma není
+   původ dat; půjčovat si barvu, která už nese význam, mate. Barvy původu
+   a stavu jsou v tomhle projektu vyhrazené (viz komentář u :root výš). */
 .pp-home-topic:hover, .pp-home-topic:focus-visible {
-  background: #eaf2fd; border-color: #2a78d6; color: #1b4f8f;
+  background: var(--pp-surface); border-color: var(--pp-border-strong); color: var(--pp-text);
 }
 @media (max-width: 860px) {
-  .pp-home-index-grid { grid-template-columns: 1fr; }
   /* Sticky v jednosloupcovém rozvržení jen poskakuje. */
   .pp-home-topics { position: static; }
 }
@@ -240,7 +249,13 @@
 
 /* ── Titulka: navigace po webu ────────────────────────────────────────────
    Dlaždice, ne odkazy v řádku: rozhodnutí „kam dál" je hlavní věc, kterou
-   titulka řeší, a zaslouží si plochu, na kterou se dá trefit prstem. */
+   titulka řeší, a zaslouží si plochu, na kterou se dá trefit prstem.
+
+   ⛔ Barvy z tokenů --pp-* (definuje dashboards.css na .pp-viz), ne natvrdo.
+   Původní verze měla natvrdo #fff a k tomu vlastní @media prefers-color-scheme,
+   která pozadí ztmavila, ALE BARVU TEXTU NECHALA — z karet se na tmavém OS
+   staly černé boxy s tmavým písmem. Tokeny přepínají povrch i text zároveň,
+   takže se to rozejít nemůže. */
 .pp-home-nav {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -249,16 +264,17 @@
 .pp-home-navtile {
   display: flex; flex-direction: column; gap: .15rem;
   padding: .8rem .9rem;
-  border: 1px solid #e3e2dd; border-radius: 8px;
-  background: #fff; text-decoration: none; color: inherit;
+  border: 1px solid var(--pp-border); border-radius: 8px;
+  background: var(--pp-surface-raised);
+  color: var(--pp-text); text-decoration: none;
   transition: border-color .12s, background .12s, transform .12s;
 }
 .pp-home-navtile:hover, .pp-home-navtile:focus-visible {
-  border-color: #c9c8c1; background: #fcfcfb; transform: translateY(-1px);
+  border-color: var(--pp-text-muted); background: var(--pp-surface); transform: translateY(-1px);
 }
-.pp-home-navtile i { font-size: 1.15rem; color: #7a7972; margin-bottom: .1rem; }
+.pp-home-navtile i { font-size: 1.15rem; color: var(--pp-text-muted); margin-bottom: .1rem; }
 .pp-home-navtile__t { font-weight: 600; }
-.pp-home-navtile__d { font-size: .8rem; color: #77766f; line-height: 1.35; }
+.pp-home-navtile__d { font-size: .8rem; color: var(--pp-text-muted); line-height: 1.35; }
 
 /* ── Titulka: dashboardy jako karty ───────────────────────────────────────
    ⚠️ Poměr stran obrázku je zafixovaný (400×220 jako zdrojová SVG). Bez toho
@@ -271,15 +287,15 @@
 }
 .pp-home-card {
   display: flex; flex-direction: column;
-  border: 1px solid #e3e2dd; border-radius: 8px; overflow: hidden;
-  background: #fff;
+  border: 1px solid var(--pp-border); border-radius: 8px; overflow: hidden;
+  background: var(--pp-surface-raised); color: var(--pp-text);
   transition: border-color .12s, box-shadow .12s;
 }
-.pp-home-card:hover { border-color: #c9c8c1; box-shadow: 0 1px 6px rgb(0 0 0 / .06); }
+.pp-home-card:hover { border-color: var(--pp-text-muted); box-shadow: var(--pp-shadow); }
 .pp-home-card__link { text-decoration: none; color: inherit; display: block; }
 .pp-home-card__img {
   display: block; width: 100%; height: auto; aspect-ratio: 400 / 220;
-  object-fit: cover; background: #f4f3f0;
+  object-fit: cover; background: var(--pp-grid);
 }
 .pp-home-card__title {
   display: block; font-weight: 600; line-height: 1.3;
@@ -288,16 +304,9 @@
 .pp-home-card__meta { padding: 0 .7rem; display: flex; flex-wrap: wrap; gap: .3rem; }
 .pp-home-card__desc {
   margin: .35rem 0 0; padding: 0 .7rem .7rem;
-  font-size: .84rem; color: #52514e; line-height: 1.4;
+  font-size: .84rem; color: var(--pp-text-secondary); line-height: 1.4;
 }
 
 /* ── Titulka: pás témat ───────────────────────────────────────────────── */
 .pp-home-topics-band { margin-top: .5rem; }
 .pp-home-topics-band .pp-home-sub { margin: 0; }
-
-@media (prefers-color-scheme: dark) {
-  .pp-home-navtile, .pp-home-card { background: #1b1a18; border-color: #34322d; }
-  .pp-home-navtile:hover, .pp-home-navtile:focus-visible { background: #232220; border-color: #4a4842; }
-  .pp-home-card:hover { border-color: #4a4842; }
-  .pp-home-card__img { background: #232220; }
-}
