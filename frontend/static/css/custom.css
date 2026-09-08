@@ -282,11 +282,14 @@
 .pp-home-navtile__t { font-weight: 600; }
 .pp-home-navtile__d { font-size: .8rem; color: var(--pp-text-muted); line-height: 1.35; }
 
-/* ── Titulka: dashboardy jako karty ───────────────────────────────────────
+/* ── Karta dashboardu — titulka i /dashboards/ ────────────────────────────
+   ⛔ JEDNA podoba pro obě místa. Dřív měl každý výpis vlastní: titulka tuhle
+   dlaždici, /dashboards/ bootstrapovou kartu z motivu s natvrdo modrým
+   pruhem. Značkování je společné v dashboard-tile.html.
    ⚠️ Poměr stran obrázku je zafixovaný (400×220 jako zdrojová SVG). Bez toho
    mřížka poskakuje, jak se obrázky donačítají, a u karet různé výšky se
    rozjedou i řádky pod nimi. */
-.pp-home-cardgrid {
+.pp-tilegrid {
   list-style: none; padding: 0; margin: .75rem 0 0;
   /* 10rem = 15rem / 1.5. Obrázek se zmenší sám (drží aspect-ratio), text ne —
      proto jsou písmo i odsazení níž zmenšené ve stejném poměru. Jinak by na
@@ -294,25 +297,25 @@
   display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: .6rem;
 }
-.pp-home-card {
+.pp-tile {
   display: flex; flex-direction: column;
   border: 1px solid var(--pp-border); border-radius: 8px; overflow: hidden;
   background: var(--pp-surface-raised); color: var(--pp-text);
   transition: border-color .12s, box-shadow .12s;
 }
-.pp-home-card:hover { border-color: var(--pp-text-muted); box-shadow: var(--pp-shadow); }
-.pp-home-card__link { text-decoration: none; color: inherit; display: block; }
-.pp-home-card__img {
+.pp-tile:hover { border-color: var(--pp-text-muted); box-shadow: var(--pp-shadow); }
+.pp-tile__link { text-decoration: none; color: inherit; display: block; }
+.pp-tile__img {
   display: block; width: 100%; height: auto; aspect-ratio: 400 / 220;
   object-fit: cover; background: var(--pp-grid);
 }
-.pp-home-card__title {
+.pp-tile__title {
   display: block; font-weight: 600; line-height: 1.25;
   font-size: .88rem;
   padding: .45rem .5rem .2rem;
 }
-.pp-home-card__meta { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: .25rem; }
-.pp-home-card__meta:last-child { padding-bottom: .5rem; }
+.pp-tile__meta { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: .25rem; }
+.pp-tile__meta:last-child { padding-bottom: .5rem; }
 
 
 /* ── Značka „obrázek vygenerovala AI" ─────────────────────────────────────
@@ -323,7 +326,7 @@
    ⚠️ Mluví o OBRÁZKU. Štítek původu vedle mluví o DATECH — jsou to dvě různá
    tvrzení a nesmí splynout, proto tahle značka záměrně nepoužívá fialovou
    --pp-origin-ai. */
-.pp-home-card__imgwrap { position: relative; display: block; }
+.pp-tile__imgwrap { position: relative; display: block; }
 .pp-ai-mark {
   position: absolute; right: .3rem; bottom: .3rem;
   display: inline-flex; align-items: center; gap: .2rem;
@@ -357,10 +360,10 @@
 .pp-origin-edge--own         { border-color: var(--pp-origin-own); }
 .pp-origin-edge--ai-assisted { border-color: var(--pp-origin-ai); }
 /* Hover nesmí barvu původu přebít — je to informace, ne dekorace. */
-.pp-home-card.pp-origin-edge:hover { border-color: inherit; }
-.pp-home-card.pp-origin-edge--aggregated:hover  { border-color: var(--pp-origin-aggregated); }
-.pp-home-card.pp-origin-edge--own:hover         { border-color: var(--pp-origin-own); }
-.pp-home-card.pp-origin-edge--ai-assisted:hover { border-color: var(--pp-origin-ai); }
+.pp-tile.pp-origin-edge:hover { border-color: inherit; }
+.pp-tile.pp-origin-edge--aggregated:hover  { border-color: var(--pp-origin-aggregated); }
+.pp-tile.pp-origin-edge--own:hover         { border-color: var(--pp-origin-own); }
+.pp-tile.pp-origin-edge--ai-assisted:hover { border-color: var(--pp-origin-ai); }
 
 /* ── Legenda k barvám — JEN na /dashboards/ ──────────────────────────────── */
 .pp-origin-legend--page {
@@ -385,3 +388,16 @@
   background: var(--pp-surface-raised); margin-top: .1rem;
 }
 .pp-origin-legend__desc { display: block; color: var(--pp-text-secondary); line-height: 1.4; }
+
+/* Plná varianta (/dashboards/, stránky tagů) — s popisem a tagy.
+   ⚠️ Širší sloupec než na titulce, a je to nutnost, ne nedůslednost: do 10rem
+   karty se nevešel ani jeden z popisů (měřeno: 66 znaků se vejde, popisy mají
+   114–158). Vzhled karty je týž, jen dostane místo na text. */
+.pp-tilegrid--full { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.pp-tile__desc {
+  margin: .3rem 0 0; padding: 0 .6rem;
+  font-size: .8rem; color: var(--pp-text-secondary); line-height: 1.4;
+}
+.pp-tile__tags { padding: .5rem .6rem .6rem; display: flex; flex-wrap: wrap; gap: .3rem; }
+.pp-tile__desc + .pp-tile__tags { padding-top: .45rem; }
+.pp-tile > :last-child { margin-bottom: 0; }

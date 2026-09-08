@@ -102,43 +102,11 @@
          naposledy změnilo jedním hromadným commitem, takže sdílejí datum a
          jejich vzájemné pořadí je libovolné. Rozejde se, jak se budou upravovat
          po jednom. */}}
-    <ul class="pp-home-cardgrid">
+    <div class="pp-tilegrid">
       {{ range first 6 .Pages.ByLastmod.Reverse }}
-      {{ $m := partial "origin-meta.html" . }}
-      <li class="pp-home-card{{ with $m }} pp-origin-edge pp-origin-edge--{{ .key }}{{ end }}"
-          {{ with $m }}title="{{ .label }} — {{ .title }}"{{ end }}>
-        <a class="pp-home-card__link" href="{{ if .Params.redirect_url }}{{ .Params.redirect_url }}{{ else }}{{ .RelPermalink }}{{ end }}">
-          {{/* Obrázek je dekorace: název i popis jsou hned pod ním jako text,
-               takže prázdný alt je správně, ne opomenutí. */}}
-          {{ $img := partial "card-image.html" . }}
-          <span class="pp-home-card__imgwrap">
-            <img class="pp-home-card__img" src="{{ relURL $img.src }}" alt="" loading="lazy" width="400" height="220">
-            {{/* ⛔ Značka je v ZNAČKOVÁNÍ, ne vypálená do obrázku. Generátory
-                 obrázků text a ikony kreslí nespolehlivě, vypálenou značku
-                 nejde opravit bez přegenerování a nepřečte ji odečítač
-                 obrazovky. Takhle je na všech obrázcích stejná, čitelná a mizí
-                 s výměnou souboru. */}}
-            {{ if $img.ai }}{{ partial "ai-image-mark.html" . }}{{ end }}
-          </span>
-          <span class="pp-home-card__title">{{ .Title }}</span>
-        </a>
-        {{/* ⚠️ Původ už není vidět jako štítek, ale je pořád ČITELNÝ: v `title`
-             karty a tady ve skrytém textu. Samotná barva rámečku je pro
-             barvoslepé čtenáře i pro odečítač obrazovky nula informace, a
-             legenda je na jiné stránce. */}}
-        {{ with $m }}<span class="visually-hidden">{{ .label }}</span>{{ end }}
-        {{ if .Params.redirect_url }}
-        <div class="pp-home-card__meta">
-          <span class="pp-origin-badge pp-origin-badge--sm" style="color:var(--pp-text-muted);background:var(--pp-grid)">{{ cond $en "external" "externí" }} <i class="bi bi-box-arrow-up-right"></i></span>
-        </div>
-        {{ end }}
-        {{/* ⛔ Bez popisu. Po zmenšení karet na 1,5× se do tří řádků nevešel
-             ANI JEDEN z šesti popisů — všechny by končily uprostřed věty. Malá
-             karta je obrázek + název + původ; souvislý text patří na
-             /dashboards/, kde jsou karty velké, a na cílovou stránku. */}}
-      </li>
+      {{ partial "dashboard-tile.html" (dict "page" . "full" false) }}
       {{ end }}
-    </ul>
+    </div>
     </div>
 
 {{- $visible := slice -}}
