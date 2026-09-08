@@ -2,7 +2,7 @@
 title: "Infekční nemoci — Střevní/potravinové"
 origin: aggregated
 description: "Salmonelózy, virové střevní infekce, shigelóza a další potravinou přenášené infekce v ČR 2018–2025 (ÚZIS ISIN)."
-image: "/images/cards/id-gastro.svg"
+image: "/images/cards/id-gastro.webp"
 tags: ["infekční nemoci", "ÚZIS", "ISIN", "potravinové nákazy"]
 data_source: '<a href="https://datanzis.uzis.gov.cz" target="_blank">ÚZIS ČR — Otevřená data ISIN (CC BY 4.0)</a>'
 build:

@@ -2,7 +2,7 @@
 title: "Infectious Diseases — Rare severe"
 origin: aggregated
 description: "Diphtheria, mpox, meningococcal disease, typhoid fever, Q fever, brucellosis, yellow fever, tularaemia — Czech Republic 2018–2025 (ÚZIS ISIN)."
-image: "/images/cards/id-rare.svg"
+image: "/images/cards/id-rare.webp"
 tags: ["infectious diseases", "ÚZIS", "ISIN", "rare diseases"]
 data_source: '<a href="https://datanzis.uzis.gov.cz" target="_blank">ÚZIS CZ — ISIN Open Data (CC BY 4.0)</a>'
 build:

@@ -4,7 +4,7 @@
      novinky → témata.
 
      ⛔ Blok signálů tu BYL a je pryč. Mapa i přepínač teď žijí na
-     /dashboards/signals/, kde je kolem nich vysvětlení, jak se práh počítá a co
+     /signals/, kde je kolem nich vysvětlení, jak se práh počítá a co
      signál neznamená. Na titulce visely bez toho kontextu a titulka kvůli nim
      začínala nejtechničtějším, co portál má. Zůstal odkaz v navigaci.
 
@@ -32,7 +32,7 @@
        tváří funkčně a v druhém jazyce vede jinam.
 
        Dlaždice, u které se cíl nenajde, se přeskočí — lepší než odkaz na 404. */}}
-  {{ $signals := .Site.GetPage "/dashboards/signals" }}
+  {{ $signals := .Site.GetPage "/signals" }}
   {{ $nav := slice
       (dict "p" (.Site.GetPage "section" "dashboards") "icon" "bi-grid-1x2-fill"
             "t" (cond $en "Dashboards"  "Dashboardy")

@@ -1,4 +1,13 @@
 ---
+# ⛔ NENÍ to dashboard, je to stránka s vlastní funkcionalitou (mapa +
+# přepínač diagnóz), a proto nežije v sekci dashboards. `type` ale zůstává
+# `dashboards`: JEN layouts/dashboards/single.html načítá /js/pp-charts.js,
+# bez kterého se mapa nikdy neobarví. Bez tohohle řádku se stránka přesune
+# a ztichne — vypadá hotově a nefunguje.
+type: dashboards
+# Stará adresa musí dál fungovat: odkazují na ni dvě publikované novinky.
+aliases:
+  - "/en/dashboards/signals/"
 title: "Signals — anomaly detection"
 origin: own
 description: "Automated screening of 1,200+ notified infectious disease time series (diagnosis × region, ÚZIS ISIN) for exceedances of the expected level using the Farrington/Noufaily method."

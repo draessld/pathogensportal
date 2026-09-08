@@ -33,7 +33,7 @@
 {{ if or (eq $img "") (eq $img $placeholder) }}
   {{/* Klíč je URL, ne jméno souboru: .File je u generovaných stránek nil. */}}
   {{ $url := .RelPermalink }}
-  {{ range $needle, $file := (dict "ebola" "ebola.svg") }}
+  {{ range $needle, $file := (dict "ebola" "ebola.webp") }}
     {{ if in $url $needle }}{{ $img = printf "/images/cards/%s" $file }}{{ end }}
   {{ end }}
 {{ end }}
