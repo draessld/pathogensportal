@@ -1,6 +1,7 @@
-{{/* Obrázek karty dashboardu. Vrací cestu, nic nevykresluje.
+{{/* Obrázek karty dashboardu. Vrací dict `src` + `ai`, nic nevykresluje.
 
      Usage: {{ $img := partial "card-image.html" $page }}
+            <img src="{{ $img.src }}"> {{ if $img.ai }}…značka…{{ end }}
 
      Pořadí: `image` z hlavičky → odvození podle URL → placeholder.
 
@@ -12,8 +13,21 @@
      ⚠️ Placeholder se bere jako CHYBĚJÍCÍ obrázek, ne jako volba. V hlavičce ho
      má ebola-bundibugyo-2026 a je to obecná šedá dlaždice; kdyby se
      respektoval, zůstala by ta stránka bez ebolího obrázku i s tímhle partialem.
+
+     ── Co znamená `ai` ──────────────────────────────────────────────────────
+     ⛔ Rozhoduje CESTA: obrázek pod {{ "/images/cards/ai/" }} je vygenerovaný AI.
+     Ne příznak v hlavičce — ten se dá zapomenout dopsat, dá se odstranit a
+     u ebola stránek ho pipeline smaže. Cesta je vlastnost souboru: kdo obrázek
+     uloží do toho adresáře, označí ho tím samým úkonem, a odznačit ho nejde
+     jinak než přesunutím souboru.
+
+     ⛔ NENÍ to totéž co `origin: ai-assisted`. To říká, že AI napsala OBSAH
+     stránky. Tohle říká, že AI vygenerovala OBRÁZEK. Dashboard s lidsky psaným
+     textem a generovanou ilustrací je první, ne druhé — spojit je dohromady by
+     znamenalo tvrdit o datech něco, co není pravda.
 */}}
 {{ $placeholder := "/images/dashboard-placeholder.svg" }}
+{{ $aiDir       := "/images/cards/ai/" }}
 {{ $img := .Params.image | default "" }}
 
 {{ if or (eq $img "") (eq $img $placeholder) }}
@@ -24,4 +38,5 @@
   {{ end }}
 {{ end }}
 
-{{ return (cond (eq $img "") $placeholder $img) }}
+{{ $src := cond (eq $img "") $placeholder $img }}
+{{ return (dict "src" $src "ai" (hasPrefix $src $aiDir)) }}

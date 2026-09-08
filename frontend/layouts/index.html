@@ -108,7 +108,16 @@
         <a class="pp-home-card__link" href="{{ if .Params.redirect_url }}{{ .Params.redirect_url }}{{ else }}{{ .RelPermalink }}{{ end }}">
           {{/* Obrázek je dekorace: název i popis jsou hned pod ním jako text,
                takže prázdný alt je správně, ne opomenutí. */}}
-          <img class="pp-home-card__img" src="{{ relURL (partial "card-image.html" .) }}" alt="" loading="lazy" width="400" height="220">
+          {{ $img := partial "card-image.html" . }}
+          <span class="pp-home-card__imgwrap">
+            <img class="pp-home-card__img" src="{{ relURL $img.src }}" alt="" loading="lazy" width="400" height="220">
+            {{/* ⛔ Značka je v ZNAČKOVÁNÍ, ne vypálená do obrázku. Generátory
+                 obrázků text a ikony kreslí nespolehlivě, vypálenou značku
+                 nejde opravit bez přegenerování a nepřečte ji odečítač
+                 obrazovky. Takhle je na všech obrázcích stejná, čitelná a mizí
+                 s výměnou souboru. */}}
+            {{ if $img.ai }}{{ partial "ai-image-mark.html" . }}{{ end }}
+          </span>
           <span class="pp-home-card__title">{{ .Title }}</span>
         </a>
         <div class="pp-home-card__meta">

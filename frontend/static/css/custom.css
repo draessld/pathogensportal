@@ -314,3 +314,28 @@
 .pp-home-card__meta { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: .25rem; }
 .pp-home-card__meta:last-child { padding-bottom: .5rem; }
 
+
+/* ── Značka „obrázek vygenerovala AI" ─────────────────────────────────────
+   V rohu náhledu, ne vypálená v obrázku: generátory kreslí text nespolehlivě,
+   vypálenou značku nejde opravit bez přegenerování a odečítač obrazovky ji
+   nepřečte. Tahle je na všech obrázcích stejná a zmizí s výměnou souboru.
+
+   ⚠️ Mluví o OBRÁZKU. Štítek původu vedle mluví o DATECH — jsou to dvě různá
+   tvrzení a nesmí splynout, proto tahle značka záměrně nepoužívá fialovou
+   --pp-origin-ai. */
+.pp-home-card__imgwrap { position: relative; display: block; }
+.pp-ai-mark {
+  position: absolute; right: .3rem; bottom: .3rem;
+  display: inline-flex; align-items: center; gap: .2rem;
+  padding: .05rem .3rem;
+  border-radius: 999px;
+  /* Vlastní tmavý podklad, ne token: leží na OBRÁZKU, jehož barvu neznáme,
+     takže kontrast musí zajistit sama a v obou motivech stejně. */
+  background: rgb(11 11 11 / .62);
+  color: #fff;
+  font-size: .62rem; font-weight: 600; letter-spacing: .02em;
+  line-height: 1.5;
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+.pp-ai-mark i { font-size: .66rem; }

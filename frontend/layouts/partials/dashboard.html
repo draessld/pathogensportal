@@ -5,8 +5,12 @@
         <div aria-hidden="true">
             <a href="{{ if .Page.Params.redirect_url }}{{ .Page.Params.redirect_url }}{{ else }}{{ .Page.RelPermalink }}{{ end }}">
                 {{/* Přes card-image.html, ať mají karty tady i na titulce stejný
-                     obrázek a jedno místo, kde se odvozuje. */}}
-                <img class="img-fluid" alt="" src="{{ relURL (partial "card-image.html" .Page) }}">
+                     obrázek, stejnou značku AI a jedno místo, kde se odvozuje. */}}
+                {{ $img := partial "card-image.html" .Page }}
+                <span class="pp-home-card__imgwrap">
+                  <img class="img-fluid" alt="" src="{{ relURL $img.src }}">
+                  {{ if $img.ai }}{{ partial "ai-image-mark.html" .Page }}{{ end }}
+                </span>
             </a>
         </div>
         <div class="p-2 bg-dashboard-title">
