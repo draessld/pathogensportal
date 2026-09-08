@@ -829,3 +829,31 @@
   .pp-signalmap__item { transition: none; }
   .pp-signalmap__item.is-flash { animation: none; }
 }
+
+/* ── Ukazatel načítání ────────────────────────────────────────────────────
+   Emblém portálu v rotaci. Sedí uvnitř .pp-skeleton, takže ho odstraní tentýž
+   kód, který uklízí skeleton.
+
+   ⛔ Skeleton pod spinnerem NESMÍ zároveň probleskovat. Dvě soupeřící animace
+   na jednom místě jsou neklid, ne informace — proto ten modifikátor shimmer
+   vypíná a nechává jen klidnou plochu, na které se točí znak. */
+.pp-skeleton--spinner {
+  animation: none;
+  background: var(--pp-grid);
+  display: grid;
+  place-items: center;
+}
+.pp-spinner { display: grid; place-items: center; line-height: 0; }
+.pp-spinner__mark {
+  width: 2.75rem; height: 2.75rem;
+  animation: pp-spin 1.6s linear infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes pp-spin { to { transform: rotate(360deg); } }
+
+/* ⛔ Pro čtenáře, kteří si vyžádali omezení pohybu, se znak nesmí točit. Zůstane
+   viditelný a statický — informace „něco se děje“ je pak v textu pro odečítač,
+   ne v pohybu. Stejné pravidlo už platí pro shimmer a pro přepínání mapy. */
+@media (prefers-reduced-motion: reduce) {
+  .pp-spinner__mark { animation: none; opacity: .75; }
+}
