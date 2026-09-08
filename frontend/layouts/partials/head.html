@@ -27,6 +27,16 @@
 
     <link rel="stylesheet" href="/vendor/datatables/css/dataTables.bootstrap5.min.css">
 
+    {{/* ⛔ Barevné tokeny (--pp-surface, --pp-border, --pp-grid, --pp-text…) žijí
+         v dashboards.css na .pp-viz. Načítal ho jen layout titulky a jednotlivého
+         dashboardu, takže na /dashboards/ a na stránkách tagů byly VŠECHNY
+         nedefinované: karty tam neměly pozadí ani okraj a přechod ve vzorku
+         legendy byl neplatný, tedy průhledný. Barvy původu to nepostihlo — ty
+         jsou na :root v custom.css — a chyba proto vypadala jako „málo
+         kontrastní“, ne jako chybějící stylopis.
+         Od chvíle, kdy je dlaždice na třech různých místech, patří tokeny sem. */}}
+    <link rel="stylesheet" href="/css/dashboards.css">
+
     <!-- Custom site overrides -->
     <link rel="stylesheet" href="/css/custom.css">
 

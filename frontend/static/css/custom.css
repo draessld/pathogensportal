@@ -365,16 +365,22 @@
 
 .pp-origin-edge {
   border-style: solid; border-width: 2px; border-color: var(--edge);
-  /* Neonová záře „za rámečkem". Záporný rozptyl ji drží těsně u karty, ať se
-     v mřížce nerozlévá do sousedů. */
-  box-shadow: 0 0 14px -3px rgb(var(--edge-glow) / .55);
+  /* Neonová záře „za rámečkem". Dvě vrstvy: těsný prstenec hned u okraje, který
+     dělá tu sytost, a krátký rozostřený nádech kolem. Jedna široká vrstva byla
+     slabá a rozpitá zároveň — světlo se rozprostřelo do plochy, místo aby
+     drželo u hrany. */
+  box-shadow:
+    0 0 0 2px rgb(var(--edge-glow) / .38),
+    0 0 9px 0 rgb(var(--edge-glow) / .7);
 }
 /* ⛔ Hover nesmí barvu původu přebít — je to informace, ne dekorace. Zesílí se
    jen záře. Předchozí verze tu nastavovala `border-color: inherit`, takže při
    najetí barva původu na okamžik zmizela. */
 .pp-tile.pp-origin-edge:hover {
   border-color: var(--edge);
-  box-shadow: 0 0 20px -2px rgb(var(--edge-glow) / .85);
+  box-shadow:
+    0 0 0 3px rgb(var(--edge-glow) / .5),
+    0 0 14px 0 rgb(var(--edge-glow) / .95);
 }
 
 /* Podbarvení názvu — samotný 2px rámeček se v mřížce ztrácel. Barva je táž jako
@@ -393,7 +399,9 @@
 
 /* Kdo si vyžádal omezení pohybu, nepřijde o barvu — mizí jen změna při najetí. */
 @media (prefers-reduced-motion: reduce) {
-  .pp-tile.pp-origin-edge:hover { box-shadow: 0 0 14px -3px rgb(var(--edge-glow) / .55); }
+  .pp-tile.pp-origin-edge:hover {
+    box-shadow: 0 0 0 2px rgb(var(--edge-glow) / .38), 0 0 9px 0 rgb(var(--edge-glow) / .7);
+  }
 }
 
 /* ── Legenda k barvám — JEN na /dashboards/ ──────────────────────────────── */
@@ -413,17 +421,33 @@
 .pp-origin-legend--page .pp-origin-legend__item {
   display: flex; align-items: flex-start; gap: .6rem; font-size: .88rem;
 }
-/* ⚠️ Vzorek zrcadlí kartu: rámeček, podbarvení i záři. Bere je z týchž
-   proměnných --edge*, takže se s kartou nemůže rozejít.
+/* ⚠️ Vzorek je MINIATURA KARTY, ne barevný čtvereček. Čtverec s okrajem
+   a zaoblenými rohy je tvar zaškrtávacího políčka — čtenář ho četl jako ovládací
+   prvek, ne jako ukázku. Proto na šířku, v poměru karty, a s pruhem dole, který
+   zastupuje podbarvený název.
+
+   Bere rámeček, podbarvení i záři z týchž proměnných --edge*, takže se s kartou
+   nemůže rozejít.
    ⛔ Barvu si musí nastavit sám — nese jen modifikátor `--aggregated`, ne
    základní třídu `.pp-origin-edge`, kde border-color a záře žijí. */
 .pp-origin-legend__swatch {
-  flex: 0 0 auto; width: 1.6rem; height: 1.6rem;
-  border-radius: 5px; border-style: solid; border-width: 2px;
+  flex: 0 0 auto;
+  width: 3.25rem; height: 2.1rem;
+  border-radius: 4px; border-style: solid; border-width: 2px;
   border-color: var(--edge);
-  background: var(--edge-bg);
-  box-shadow: 0 0 8px -2px rgb(var(--edge-glow) / .6);
-  margin-top: .15rem;
+  /* ⛔ Spodní pruh v PLNÉ barvě, ne v bledém podbarvení karty. První pokus měl
+     obojí skoro bílé a vzorek pak vypadal jako prázdné vstupní pole — přesně to
+     zaškrtávátko, kvůli kterému se to předělávalo. Plný pruh dělá z obrysu
+     miniaturu karty. */
+  background: linear-gradient(
+    to bottom,
+    var(--pp-grid) 0 58%,
+    var(--edge) 58% 100%
+  );
+  box-shadow:
+    0 0 0 2px rgb(var(--edge-glow) / .35),
+    0 0 7px 0 rgb(var(--edge-glow) / .7);
+  margin-top: .2rem;
 }
 .pp-origin-legend__desc { display: block; color: var(--pp-text-secondary); line-height: 1.4; }
 
