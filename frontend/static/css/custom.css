@@ -87,19 +87,6 @@
 
 /* Signály */
 .pp-home-signal-list { display: grid; gap: .4rem; }
-.pp-home-signal {
-  display: grid; grid-template-columns: auto 1fr auto; gap: .85rem; align-items: center;
-  padding: .6rem .85rem; border: 1px solid #e2e1dc; border-radius: 10px;
-  background: #fff; text-decoration: none; color: inherit;
-}
-.pp-home-signal:hover { border-color: #c9c8c1; background: #fcfcfb; }
-.pp-home-signal__score {
-  font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1rem;
-  color: #b3322f; min-width: 3.2rem; text-align: right;
-}
-.pp-home-signal__where { color: #77766f; font-size: .85rem; margin-left: .5rem; }
-.pp-home-signal__nums { color: #52514e; font-size: .82rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pp-home-caveat { margin-top: .6rem; font-size: .85rem; color: #52514e; max-width: 72ch; }
 
 /* Novinky */
 .pp-home-news-list { display: grid; gap: .4rem; }
@@ -120,18 +107,10 @@
 }
 .pp-home-filter i { color: #77766f; }
 .pp-home-filter input { border: 0; outline: 0; flex: 1; background: transparent; font-size: .95rem; }
-.pp-home-index-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .3rem; }
-.pp-home-index-item {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem;
-  padding: .5rem .85rem; border: 1px solid #e2e1dc; border-radius: 10px; background: #fff;
-}
-.pp-home-index-item > a { font-weight: 600; text-decoration: none; }
-.pp-home-index-item__desc { flex-basis: 100%; color: #52514e; font-size: .85rem; }
 .pp-home-index-empty { color: #77766f; font-size: .9rem; padding: .5rem 0; }
 
 @media (max-width: 576px) {
   .pp-home-signal { grid-template-columns: auto 1fr; }
-  .pp-home-signal__nums { grid-column: 2; }
   .pp-home-news-item { grid-template-columns: 1fr; }
   .pp-home-news-item__desc { grid-column: 1; }
 }
@@ -173,7 +152,6 @@
   gap: 1.25rem;
   align-items: start;
 }
-.pp-home-index-main { min-width: 0; }
 .pp-home-topics {
   border: 1px solid #e2e1dc;
   border-radius: 10px;
@@ -259,3 +237,67 @@
   color: #52514e; cursor: pointer; white-space: nowrap;
 }
 .pp-privacy-dialog__lang:hover { background: #f2f1ee; color: #0b0b0b; }
+
+/* ── Titulka: navigace po webu ────────────────────────────────────────────
+   Dlaždice, ne odkazy v řádku: rozhodnutí „kam dál" je hlavní věc, kterou
+   titulka řeší, a zaslouží si plochu, na kterou se dá trefit prstem. */
+.pp-home-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: .5rem;
+}
+.pp-home-navtile {
+  display: flex; flex-direction: column; gap: .15rem;
+  padding: .8rem .9rem;
+  border: 1px solid #e3e2dd; border-radius: 8px;
+  background: #fff; text-decoration: none; color: inherit;
+  transition: border-color .12s, background .12s, transform .12s;
+}
+.pp-home-navtile:hover, .pp-home-navtile:focus-visible {
+  border-color: #c9c8c1; background: #fcfcfb; transform: translateY(-1px);
+}
+.pp-home-navtile i { font-size: 1.15rem; color: #7a7972; margin-bottom: .1rem; }
+.pp-home-navtile__t { font-weight: 600; }
+.pp-home-navtile__d { font-size: .8rem; color: #77766f; line-height: 1.35; }
+
+/* ── Titulka: dashboardy jako karty ───────────────────────────────────────
+   ⚠️ Poměr stran obrázku je zafixovaný (400×220 jako zdrojová SVG). Bez toho
+   mřížka poskakuje, jak se obrázky donačítají, a u karet různé výšky se
+   rozjedou i řádky pod nimi. */
+.pp-home-cardgrid {
+  list-style: none; padding: 0; margin: .75rem 0 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: .75rem;
+}
+.pp-home-card {
+  display: flex; flex-direction: column;
+  border: 1px solid #e3e2dd; border-radius: 8px; overflow: hidden;
+  background: #fff;
+  transition: border-color .12s, box-shadow .12s;
+}
+.pp-home-card:hover { border-color: #c9c8c1; box-shadow: 0 1px 6px rgb(0 0 0 / .06); }
+.pp-home-card__link { text-decoration: none; color: inherit; display: block; }
+.pp-home-card__img {
+  display: block; width: 100%; height: auto; aspect-ratio: 400 / 220;
+  object-fit: cover; background: #f4f3f0;
+}
+.pp-home-card__title {
+  display: block; font-weight: 600; line-height: 1.3;
+  padding: .6rem .7rem .3rem;
+}
+.pp-home-card__meta { padding: 0 .7rem; display: flex; flex-wrap: wrap; gap: .3rem; }
+.pp-home-card__desc {
+  margin: .35rem 0 0; padding: 0 .7rem .7rem;
+  font-size: .84rem; color: #52514e; line-height: 1.4;
+}
+
+/* ── Titulka: pás témat ───────────────────────────────────────────────── */
+.pp-home-topics-band { margin-top: .5rem; }
+.pp-home-topics-band .pp-home-sub { margin: 0; }
+
+@media (prefers-color-scheme: dark) {
+  .pp-home-navtile, .pp-home-card { background: #1b1a18; border-color: #34322d; }
+  .pp-home-navtile:hover, .pp-home-navtile:focus-visible { background: #232220; border-color: #4a4842; }
+  .pp-home-card:hover { border-color: #4a4842; }
+  .pp-home-card__img { background: #232220; }
+}

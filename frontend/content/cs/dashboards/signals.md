@@ -15,6 +15,8 @@ stránka je proto prochází automaticky: pro každou řadu spočítá **očeká
 hladinu** ze sezónnosti a historie a zobrazí měsíce, kdy hlášený počet překročil
 prahovou mez.
 
+{{< signals-map src="/data/charts/anomaly_signals.json" title="Kde signál je — podle kraje" >}}
+
 {{< signals src="/data/charts/anomaly_signals.json" title="Řady nad očekávanou hladinou" >}}
 
 ### Jak číst tabulku

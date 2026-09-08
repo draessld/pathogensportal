@@ -4,7 +4,9 @@
     <div class="bg-dashboard">
         <div aria-hidden="true">
             <a href="{{ if .Page.Params.redirect_url }}{{ .Page.Params.redirect_url }}{{ else }}{{ .Page.RelPermalink }}{{ end }}">
-                <img class="img-fluid" alt="Thumbnail for {{ .Name }}" src="{{ relURL .Page.Params.image }}">
+                {{/* Přes card-image.html, ať mají karty tady i na titulce stejný
+                     obrázek a jedno místo, kde se odvozuje. */}}
+                <img class="img-fluid" alt="" src="{{ relURL (partial "card-image.html" .Page) }}">
             </a>
         </div>
         <div class="p-2 bg-dashboard-title">
