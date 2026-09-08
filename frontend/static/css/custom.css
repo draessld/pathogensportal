@@ -355,15 +355,46 @@
    ⚠️ Musí být ZA pravidly motivu: .bg-dashboard má natvrdo modrý okraj
    #295986. custom.css se načítá po theme.css, takže při stejné specifičnosti
    vyhrává tohle. Kdyby se pořadí načítání změnilo, rámečky tiše zmodrají. */
-.pp-origin-edge { border-style: solid; border-width: 2px; }
-.pp-origin-edge--aggregated  { border-color: var(--pp-origin-aggregated); }
-.pp-origin-edge--own         { border-color: var(--pp-origin-own); }
-.pp-origin-edge--ai-assisted { border-color: var(--pp-origin-ai); }
-/* Hover nesmí barvu původu přebít — je to informace, ne dekorace. */
-.pp-tile.pp-origin-edge:hover { border-color: inherit; }
-.pp-tile.pp-origin-edge--aggregated:hover  { border-color: var(--pp-origin-aggregated); }
-.pp-tile.pp-origin-edge--own:hover         { border-color: var(--pp-origin-own); }
-.pp-tile.pp-origin-edge--ai-assisted:hover { border-color: var(--pp-origin-ai); }
+/* Každá kategorie si nastaví svou trojici; pravidla níž pak sahají jen na
+   --edge / --edge-bg / --edge-glow a nemusí se opakovat třikrát.
+   ⚠️ --edge-glow je RGB TROJICE bez obalu, ne barva: jde do rgb(… / alfa),
+   protože záře potřebuje průhlednost, kterou hotový hex nedá. */
+.pp-origin-edge--aggregated  { --edge: var(--pp-origin-aggregated); --edge-bg: var(--pp-origin-aggregated-bg); --edge-glow: 42 120 214; }
+.pp-origin-edge--own         { --edge: var(--pp-origin-own);        --edge-bg: var(--pp-origin-own-bg);        --edge-glow: 27 122 84; }
+.pp-origin-edge--ai-assisted { --edge: var(--pp-origin-ai);         --edge-bg: var(--pp-origin-ai-bg);         --edge-glow: 91 70 189; }
+
+.pp-origin-edge {
+  border-style: solid; border-width: 2px; border-color: var(--edge);
+  /* Neonová záře „za rámečkem". Záporný rozptyl ji drží těsně u karty, ať se
+     v mřížce nerozlévá do sousedů. */
+  box-shadow: 0 0 14px -3px rgb(var(--edge-glow) / .55);
+}
+/* ⛔ Hover nesmí barvu původu přebít — je to informace, ne dekorace. Zesílí se
+   jen záře. Předchozí verze tu nastavovala `border-color: inherit`, takže při
+   najetí barva původu na okamžik zmizela. */
+.pp-tile.pp-origin-edge:hover {
+  border-color: var(--edge);
+  box-shadow: 0 0 20px -2px rgb(var(--edge-glow) / .85);
+}
+
+/* Podbarvení názvu — samotný 2px rámeček se v mřížce ztrácel. Barva je táž jako
+   rámeček, jen tlumená, takže obojí čte jako jedna informace, ne jako dvě. */
+.pp-origin-edge .pp-tile__title {
+  background: var(--edge-bg);
+  border-bottom: 1px solid var(--edge);
+  padding: .5rem .6rem;
+}
+
+/* ⚠️ Tmavý motiv se v tomhle projektu spíná [data-bs-theme="dark"], NE podle
+   nastavení systému. Na tmavém podkladu potřebuje záře světlejší hodnoty. */
+[data-bs-theme="dark"] .pp-origin-edge--aggregated  { --edge-glow: 127 180 240; }
+[data-bs-theme="dark"] .pp-origin-edge--own         { --edge-glow: 108 201 161; }
+[data-bs-theme="dark"] .pp-origin-edge--ai-assisted { --edge-glow: 180 164 243; }
+
+/* Kdo si vyžádal omezení pohybu, nepřijde o barvu — mizí jen změna při najetí. */
+@media (prefers-reduced-motion: reduce) {
+  .pp-tile.pp-origin-edge:hover { box-shadow: 0 0 14px -3px rgb(var(--edge-glow) / .55); }
+}
 
 /* ── Legenda k barvám — JEN na /dashboards/ ──────────────────────────────── */
 .pp-origin-legend--page {
@@ -382,10 +413,17 @@
 .pp-origin-legend--page .pp-origin-legend__item {
   display: flex; align-items: flex-start; gap: .6rem; font-size: .88rem;
 }
+/* ⚠️ Vzorek zrcadlí kartu: rámeček, podbarvení i záři. Bere je z týchž
+   proměnných --edge*, takže se s kartou nemůže rozejít.
+   ⛔ Barvu si musí nastavit sám — nese jen modifikátor `--aggregated`, ne
+   základní třídu `.pp-origin-edge`, kde border-color a záře žijí. */
 .pp-origin-legend__swatch {
-  flex: 0 0 auto; width: 1.5rem; height: 1.5rem;
+  flex: 0 0 auto; width: 1.6rem; height: 1.6rem;
   border-radius: 5px; border-style: solid; border-width: 2px;
-  background: var(--pp-surface-raised); margin-top: .1rem;
+  border-color: var(--edge);
+  background: var(--edge-bg);
+  box-shadow: 0 0 8px -2px rgb(var(--edge-glow) / .6);
+  margin-top: .15rem;
 }
 .pp-origin-legend__desc { display: block; color: var(--pp-text-secondary); line-height: 1.4; }
 

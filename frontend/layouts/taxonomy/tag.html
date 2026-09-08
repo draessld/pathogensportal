@@ -12,6 +12,12 @@
      dosazuje sekci, takže se pro obsah sekce dashboards nic nemění.
 */}}
 {{ define "main" }}
+{{/* ⛔ .pp-viz není dekorace — na něm jsou definované VŠECHNY barevné
+     tokeny (dashboards.css). Bez tohohle obalu se `var(--pp-surface-raised)`
+     ani `var(--pp-border)` nevyhodnotí, karta ztratí pozadí i okraj a vypadá
+     jako by se styly nenačetly. Barvy původu to nepostihlo, ty jsou na :root,
+     takže rámeček zůstal vidět a chyba se tvářila jako „málo kontrastní“. */}}
+<div class="pp-viz">
 
 {{ .Content }}
 
@@ -37,5 +43,6 @@
         {{ end }}
     </div>
     <hr>
+</div>
 </div>
 {{ end }}
