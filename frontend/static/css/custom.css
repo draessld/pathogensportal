@@ -150,13 +150,18 @@
 .pp-partners__grid a:hover img, .pp-partners__grid a:focus-visible img { filter: none; opacity: 1; }
 @media (max-width: 576px) { .pp-partners__grid { gap: 1rem 1.25rem; } .pp-partners__grid img { height: 34px; } }
 
-/* ── Rejstřík + boční panel Témata ───────────────────────────────────────── */
-.pp-home-index-grid {
+/* ── Dashboardy + boční panel Témata ─────────────────────────────────────
+   Témata sedí VEDLE karet, ne v samostatném pásu pod novinkami: obojí
+   vede na dashboard, jen jinou osou — karty podle nemoci, témata napříč
+   nemocemi (kraje, surveillance, ÚZIS). Odtržené na konec stránky se
+   čtou jako patička. */
+.pp-home-dash-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 16rem);
   gap: 1.25rem;
   align-items: start;
 }
+.pp-home-dash-main { min-width: 0; }
 .pp-home-topics {
   border: 1px solid var(--pp-border);
   border-radius: 10px;
@@ -190,6 +195,7 @@
 @media (max-width: 860px) {
   /* Sticky v jednosloupcovém rozvržení jen poskakuje. */
   .pp-home-topics { position: static; }
+  .pp-home-dash-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Upozornění o zpracování dat (PP-55) ─────────────────────────────────── */
@@ -307,6 +313,3 @@
   font-size: .84rem; color: var(--pp-text-secondary); line-height: 1.4;
 }
 
-/* ── Titulka: pás témat ───────────────────────────────────────────────── */
-.pp-home-topics-band { margin-top: .5rem; }
-.pp-home-topics-band .pp-home-sub { margin: 0; }

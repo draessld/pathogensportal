@@ -86,6 +86,8 @@
       <a class="pp-home-more" href="{{ .RelPermalink }}">{{ cond $en "All dashboards" "Všechny dashboardy" }} <i class="bi bi-arrow-right-short"></i></a>
     </div>
 
+    <div class="pp-home-dash-grid">
+    <div class="pp-home-dash-main">
     <label class="pp-home-filter">
       <i class="bi bi-funnel" aria-hidden="true"></i>
       <input type="search" id="pp-index-filter" autocomplete="off"
@@ -114,6 +116,30 @@
     <p class="pp-home-index-empty" id="pp-index-empty" hidden>
       {{ cond $en "Nothing matches that." "Tomu nic neodpovídá." }}
     </p>
+    </div>
+
+{{- $visible := slice -}}
+  {{- $labels := dict -}}
+  {{- range site.RegularPages -}}
+    {{- range .Params.tags -}}
+      {{- $visible = $visible | append (. | urlize) -}}
+      {{- $labels = merge $labels (dict (. | urlize) .) -}}
+    {{- end -}}
+  {{- end -}}
+    <aside class="pp-home-topics" aria-labelledby="pp-topics-head">
+      <h3 id="pp-topics-head">{{ cond $en "Topics" "Témata" }}</h3>
+      {{/* ⚠️ Říká, že se jde JINAM. Chipy sedí vedle filtru, který filtruje na
+           místě — bez tohohle rozlišení vypadají jako druhá sada filtrů. */}}
+      <p class="pp-home-topics__lead">{{ cond $en "Jump across diseases" "Napříč nemocemi" }}</p>
+      <div class="pp-home-topics__list">
+      {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+      {{ if in $visible ($name | urlize) }}
+      <a class="pp-home-topic" href="{{ (printf "/tags/%s/" (urlize $name)) | relLangURL }}">{{ index $labels (urlize $name) | default $name }}</a>
+      {{ end }}
+      {{ end }}
+      </div>
+    </aside>
+    </div>
 
     {{/* Legenda — barva bez legendy je nedešifrovatelná. */}}
     <div class="pp-origin-legend mt-3">
@@ -146,44 +172,6 @@
   </section>
   {{ end }}
   {{ end }}
-
-  {{/* ── 5. Témata ─────────────────────────────────────────────────────────
-       Napříč nemocemi (kraje, surveillance, ÚZIS…), kdežto karty výš vedou
-       podle nemoci. Dvě různé osy, obojí končí na dashboardu.
-
-       ⛔ Filtr na tagy s obsahem je nutný: .Site.Taxonomies NEREspektuje
-       `build: list: never`, kdežto site.RegularPages ano. Bez něj vedou tagy
-       schovaných podstránek na prázdné stránky tagů (PP-43, PP-51).
-
-       ⛔ Odkazy jdou přes relLangURL, ne natvrdo "/tags/…". Absolutní cesta
-       ignoruje jazyk, takže anglická titulka odkazovala na české stránky tagů
-       — z 28 odkazů 18 na neexistující URL.
-
-       ⚠️ Zároveň se sbírá PŮVODNÍ podoba tagu. `.Site.Taxonomies.tags` drží
-       normalizovaný klíč, takže „IMG AV ČR" by se vypsalo jako „img av čr" —
-       zatímco na kartách se vypisuje z .Params.tags správně. Stejný tag dvěma
-       způsoby na jedné stránce vypadá jako chyba. */}}
-  {{- $visible := slice -}}
-  {{- $labels := dict -}}
-  {{- range site.RegularPages -}}
-    {{- range .Params.tags -}}
-      {{- $visible = $visible | append (. | urlize) -}}
-      {{- $labels = merge $labels (dict (. | urlize) .) -}}
-    {{- end -}}
-  {{- end -}}
-  <section class="pp-home-topics-band">
-    <div class="pp-home-sec-head">
-      <h2>{{ cond $en "Topics" "Témata" }}</h2>
-      <span class="pp-home-sub">{{ cond $en "Jump across diseases" "Napříč nemocemi" }}</span>
-    </div>
-    <div class="pp-home-topics__list">
-      {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
-      {{ if in $visible ($name | urlize) }}
-      <a class="pp-home-topic" href="{{ (printf "/tags/%s/" (urlize $name)) | relLangURL }}">{{ index $labels (urlize $name) | default $name }}</a>
-      {{ end }}
-      {{ end }}
-    </div>
-  </section>
 
 </div>
 
