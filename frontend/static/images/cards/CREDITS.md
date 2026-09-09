@@ -28,4 +28,8 @@ carry a badge that lies about it.
 
 Still on generated/abstract placeholders, because they depict no single pathogen:
 `signals.svg`, `infectious-hub.svg`, `id-other.svg`, `id-skin.svg`, `id-vector.svg`,
-`flu-regional.svg`, `phylo.svg`, `covid-demographics.svg`.
+`flu-regional.svg`, `covid-demographics.svg`.
+
+`phylo.svg` is no longer referenced by anything. It carried both Nextstrain cards, but
+each of those is about exactly one pathogen — SARS-CoV-2 and influenza — so they now
+show the same photograph as the surveillance dashboard for the same pathogen.
