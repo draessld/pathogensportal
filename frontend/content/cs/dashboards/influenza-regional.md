@@ -2,7 +2,7 @@
 title: "Chřipka — regionální surveillance"
 origin: aggregated
 description: "Týdenní laboratorní záchyty respiračních virů po krajích ČR — z týdenních PDF hlášení SZÚ/NRL, aktualizováno každý týden."
-image: "/images/cards/flu-regional.svg"
+image: "/images/cards/flu.webp"
 highlight: false
 tags: ["chřipka", "surveillance", "kraje", "SZÚ", "ČR"]
 data_source: '<a href="https://szu.gov.cz/publikace-szu/data/akutni-respiracni-infekce-chripka/" target="_blank">SZÚ — Národní referenční laboratoř pro chřipku</a>'

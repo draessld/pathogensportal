@@ -28,8 +28,15 @@ carry a badge that lies about it.
 
 Still on generated/abstract placeholders, because they depict no single pathogen:
 `signals.svg`, `infectious-hub.svg`, `id-other.svg`, `id-skin.svg`, `id-vector.svg`,
-`flu-regional.svg`, `covid-demographics.svg`.
+`covid-demographics.svg`.
 
-`phylo.svg` is no longer referenced by anything. It carried both Nextstrain cards, but
-each of those is about exactly one pathogen — SARS-CoV-2 and influenza — so they now
-show the same photograph as the surveillance dashboard for the same pathogen.
+`phylo.svg` and `flu-regional.svg` are no longer referenced by anything. Each carried a
+card about exactly one pathogen — the two Nextstrain phylogenies and the regional
+influenza surveillance — and a card about one pathogen shows that pathogen. All three
+now use the same photograph as the surveillance dashboard for the same pathogen.
+
+⚠️ The consequence is three identical influenza pictures on /dashboards/: weekly
+surveillance, regional surveillance and phylogeny. That is deliberate — the card is
+identified by its title, and a reader should recognise the pathogen without reading.
+Splitting them again needs three DIFFERENT influenza photographs, not a return to
+abstract icons for two of them.
