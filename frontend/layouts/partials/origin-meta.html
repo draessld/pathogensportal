@@ -32,7 +32,7 @@
       "title" (cond $en "Produced by us, or handed to us for processing. We stand behind it." "Vznikla u nás, nebo jsme je dostali ke zpracování. Ručíme za ně.") }}
 {{ else if eq $o "ai-assisted" }}
   {{ $out = dict "key" $o "icon" "bi-robot"
-      "label" (cond $en "AI-processed" "Zpracováno AI")
+      "label" (cond $en "AI-assisted" "Vytvořeno s pomocí AI")
       "lead"  (cond $en "written by an AI agent, expert-reviewed" "sepsala AI, prošlo odbornou revizí")
       "title" (cond $en "Collected from public sources and written by an AI agent, reviewed by a subject-matter expert before publication." "Posbíráno z veřejných zdrojů a sepsáno AI agentem; před zveřejněním prošlo odbornou revizí.") }}
 {{ end }}
