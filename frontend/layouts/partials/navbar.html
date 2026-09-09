@@ -1,7 +1,13 @@
 <!-- MAIN CONTENT -->
 
 <!-- Top navigation bar with logo and menu beside the logo -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white pb-0">
+{{/* ⛔ Bez `navbar-expand-*`. Do 9. 9. 2026 ho tenhle navbar potřeboval kvůli
+     pruhu s „O portálu", který v něm seděl v `collapse` bez `id`. Ten pruh je
+     pryč — „O portálu" je teď v rozklikávacím menu — takže tady není co
+     rozbalovat, a hlavně: bez `navbar-expand-lg` Bootstrap přestane nad `lg`
+     skrývat `.navbar-toggler`, takže tlačítko drží samo a nemusí ho zachraňovat
+     výjimka v CSS. */}}
+<nav class="navbar navbar-light bg-white pb-0">
     <div class="container">
         {{/* ⛔ V hlavičce je JEN logo portálu. Loga partnerů odsud odešla 9. 9. 2026:
              ELIXIR, ÚMG, VZÚ a Program švýcarsko-české spolupráce stály vedle
@@ -33,8 +39,12 @@
 
              Odkazuje na PŘEKLAD AKTUÁLNÍ STRÁNKY, když existuje; jinak na domovskou
              stránku druhého jazyka. Motiv odkazoval vždycky na domovskou. */}}
+        {{/* Přepínač jazyků a tlačítko menu jsou jedna skupina vpravo v hlavičce,
+             na místě, kde do 9. 9. 2026 stálo „O portálu". */}}
+        <div class="d-flex align-items-center ms-auto gap-2">
+
         {{ if hugo.IsMultilingual }}
-        <div class="pp-langswitch ms-auto me-2" role="group" aria-label="{{ if eq .Site.Language.Lang "en" }}Language{{ else }}Jazyk{{ end }}">
+        <div class="pp-langswitch" role="group" aria-label="{{ if eq .Site.Language.Lang "en" }}Language{{ else }}Jazyk{{ end }}">
           {{ $cur := . }}
           {{ range .Site.Languages }}
           {{ $lang := .Lang }}
@@ -50,36 +60,13 @@
         </div>
         {{ end }}
 
-        <!-- Hamburger button, shows up only on smaller screen-->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapseBottom"
-                aria-controls="navbarCollapseBottom" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarCollapseBottom" aria-expanded="false"
+                aria-label="{{ if eq .Site.Language.Lang "en" }}Menu{{ else }}Nabídka{{ end }}">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <!-- Navigation links beside logo, visible only on biger screen -->
-        <div class="d-flex flex-column align-items-end collapse navbar-collapse">
-
-            <!-- Top navbar list i.e. About, Contact, Language, etc -->
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto navbar-top">
-                    {{ range .Site.Menus.navbar_top }}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ .URL }}">{{ .Name }}</a>
-                    </li>
-                    {{ end }}
-                    {{/* Přepínač jazyků je teď mimo tenhle collapse — viz výše.
-                         Tady byl nedostupný na mobilu. */}}
-                    {{ with .Site.Params.repository }}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ . }}">
-                            <i class="bi bi-github"></i>
-                        </a>
-                    </li>
-                    {{ end }}
-                </ul>
-            </div>
-
         </div>
+
     </div>
 </nav>
 <!-- ENDS HERE - Top navigation bar with logo and menu beside the logo -->
@@ -97,17 +84,19 @@
                  a hamburger cílí na #navbarCollapseBottom. Pod šířkou lg se na
                  „O portálu" nedalo dostat vůbec. Stejná past jako u přepínače
                  jazyků, který proto sedí mimo všechny collapse.
-                 `d-lg-none`: na desktopu ať to není dvakrát. */}}
-            <div class="d-lg-none">
+
+                 ⛔ `d-lg-none` odsud zmizelo 9. 9. 2026 spolu s pruhem vpravo
+                 v hlavičce, kde „O portálu" stávalo. Ta třída tu byla proto, aby
+                 položka nebyla na desktopu dvakrát — druhý výskyt už neexistuje,
+                 takže s ní by „O portálu" nad `lg` zmizelo úplně. */}}
+            <div>
                 {{ range .Site.Menus.navbar_top }}
                 <div class="main_menu_item pb-1"><a href="{{ .URL }}">{{ .Name }}</a></div>
                 {{ end }}
             </div>
 
             <!-- Top nav list i.e. About, Contact, Language, etc -->
-            {{/* Oddělovač patří k bloku NAD ním, a ten je `d-lg-none` — na
-                 desktopu by jinak menu začínalo čarou bez ničeho nad sebou. */}}
-            <hr class="d-lg-none">
+            <hr>
 
             {{/* ⛔ Tenhle blok NESMÍ mít `d-lg-none`. Měl ho, dokud existovala
                  vodorovná lišta pro desktop — po jejím odstranění 9. 9. 2026 by
