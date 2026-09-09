@@ -6,6 +6,7 @@
      the page in `.container`, so there is no further container here.
 */}}
 {{ define "main" }}
+{{ $en := eq .Site.Language.Lang "en" }}
 {{/* Report pages come from an external generator and carry their own class
      names — reports.css translates them into portal tokens. It is not loaded
      anywhere else. */}}
@@ -29,11 +30,35 @@
       <span class="pp-meta__item">{{ . }}</span>
       {{ end }}
       {{ with .Params.data_source }}
-      <span class="pp-meta__item"><i class="bi bi-database" aria-hidden="true"></i> Zdroj: {{ . | safeHTML }}</span>
+      <span class="pp-meta__item"><i class="bi bi-database" aria-hidden="true"></i> {{ cond $en "Source" "Zdroj" }}: {{ . | safeHTML }}</span>
       {{ end }}
-      {{ with .Params.update_freq }}
-      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Aktualizace: {{ . }}</span>
+      {{/* Datum posledního běhu pipeline se ČTE Z DAT, nepíše se do hlavičky.
+
+           `update_from` jmenuje JSON v static/data/charts/; datum je jeho
+           `generated_at`. Ta stránka o pipeline referuje, takže cokoli
+           napsaného ručně zastará hned při dalším běhu — a nikdo si toho
+           nevšimne, protože to pořád vypadá jako platný údaj.
+
+           ⚠️ Pipeline tenhle soubor s obsahem stránky NEPŘEPISUJE (na rozdíl
+           od ebola stránek), takže tady se ručně zapsané datum ani nemá jak
+           samo opravit.
+
+           `update_freq` zůstává pro stránky, kde žádné takové razítko není —
+           u těch je slovní údaj o frekvenci to jediné, co se dá říct pravdivě. */}}
+      {{ $updated := "" }}
+      {{ with .Params.update_from }}
+        {{ $path := printf "static/data/charts/%s" . }}
+        {{ if os.FileExists $path }}
+          {{ with (os.ReadFile $path | transform.Unmarshal).generated_at }}{{ $updated = . }}{{ end }}
+        {{ else }}
+          {{ errorf "update_from: %q neexistuje (stránka %q)" $path $.Title }}
+        {{ end }}
       {{ end }}
+      {{ if $updated }}
+      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ cond $en "Updated" "Aktualizace" }}: {{ (time.AsTime $updated).Format (cond $en "2 Jan 2006, 15:04 MST" "2. 1. 2006, 15:04 MST") }}</span>
+      {{ else }}{{ with .Params.update_freq }}
+      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ cond $en "Updated" "Aktualizace" }}: {{ . }}</span>
+      {{ end }}{{ end }}
       {{ with .Params.tags }}
       <span class="pp-meta__item">
         {{ range . }}<span class="pp-tag">{{ . }}</span>{{ end }}
