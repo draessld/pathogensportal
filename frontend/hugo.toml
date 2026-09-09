@@ -102,6 +102,14 @@ enableGitInfo = true
       name = "Dashboardy"
       pageRef = "/dashboards"
       weight = 10
+    # ⛔ Signály musí být v menu. Stránka odešla ze sekce dashboardů a od
+    # 9. 9. 2026 na ni nevede ani dlaždice z titulky — tohle je jediná
+    # navigační cesta, kterou má.
+    [[languages.cs.menus.main]]
+      identifier = "signals"
+      name = "Signály"
+      pageRef = "/signals"
+      weight = 15
     [[languages.cs.menus.main]]
       identifier = "news"
       name = "Novinky"
@@ -134,6 +142,14 @@ enableGitInfo = true
       name = "Dashboards"
       pageRef = "/dashboards"
       weight = 10
+    # ⛔ Signály musí být v menu. Stránka odešla ze sekce dashboardů a od
+    # 9. 9. 2026 na ni nevede ani dlaždice z titulky — tohle je jediná
+    # navigační cesta, kterou má.
+    [[languages.en.menus.main]]
+      identifier = "signals"
+      name = "Signals"
+      pageRef = "/signals"
+      weight = 15
     [[languages.en.menus.main]]
       identifier = "news"
       name = "News"
