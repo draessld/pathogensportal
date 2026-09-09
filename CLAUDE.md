@@ -64,14 +64,20 @@ merge.
 the committed JSON only when the backend is absent, so once website-be + Postgres run the data stops
 needing to be committed at all.
 
-⛔ **Never type an update date into a dashboard's front matter.** A page states its freshness with
-`update_from: "<file>.json"`, and `layouts/dashboards/single.html` reads the stamp out of that file.
-Two stamps, two different claims, two different labels — do not merge them: `generated_at` is when the
-pipeline ran ("Aktualizace: …"), `posledni_datum` is how far the data reaches ("Data k …"); a run on
-9 Sep can return figures through 8 Sep. A hand-written date rots at the next pipeline run with nothing to
-correct it, because the pipeline rewrites only the `ebola-*` pages. ⚠️ Only `anomaly_signals.json`,
-`covid_summary.json` and `ebola_summary.json` carry a stamp today; the rest still state a frequency, and
-fixing that is a change to `save()` in `pathogensportal-db`, not here.
+⛔ **Never type an update date into a dashboard's front matter.** A page names a chart file and says how
+to read a date out of it — `update_from: "flu_weekly.json"` + `update_read: "week"` — and
+`layouts/partials/update-stamp.html` does the reading. A hand-written date rots at the next pipeline run
+with nothing to correct it, because the pipeline rewrites only the `ebola-*` pages.
+
+⛔ **`update_read` must stay explicit; do not "simplify" it into guessing from the file.** The last label
+of a series is a period in `flu_weekly` (`KT 36/26`), an age band in `covid_by_age` (`80+`) and a region
+in `flu_regional_overview` (`Liberecký`). Anything that takes the last label automatically prints an age
+band as an update date on a third of the dashboards, and it looks like a valid figure.
+Readings: `stamp` (`generated_at` = pipeline run → "Aktualizace: …", else `posledni_datum` = data extent
+→ "Data k …"), `period-end`, `week` (ISO week → its Sunday), `month`, `year`. ⚠️ Month and year are not
+converted to a day — ISIN by disease group is an annual series and a fabricated 31 Dec would claim daily
+precision. ⚠️ Four pages have no date to read and keep a sentence about frequency: the two Nextstrain
+builds and wastewater run on someone else's server, hantavirus is a closed situational report.
 
 ## Common commands
 
