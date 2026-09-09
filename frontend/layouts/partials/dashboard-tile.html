@@ -15,7 +15,18 @@
 
      ⚠️ Původ dat nese barva rámečku, ne štítek. Barva sama je pro barvoslepé
      čtenáře i pro odečítač nula informace, proto `title` na kartě a skrytý
-     text; vysvětlení barev je v legendě na /dashboards/. */}}
+     text; vysvětlení barev je v legendě na /dashboards/.
+
+     ⚠️ Odkaz ven značí JEN ikonka v rohu náhledu (9. 9. 2026). Slovo „externí"
+     pod názvem bylo ve výpisu hlasitější než samotný název dashboardu. Ikonka
+     je běžný symbol pro „otevře se jinde", takže vedle názvu nic vysvětlovat
+     nemusí — ale sama o sobě je pro odečítač němá, proto `title` a skrytý text
+     UVNITŘ odkazu, ať se přečte jako jeho součást.
+
+     ⛔ Není to totéž co barva rámečku. Ta říká, ODKUD JSOU DATA, ne kam vede
+     odkaz: `aggregated` má 15 z 18 dashboardů a externí jsou z nich tři. Kdyby
+     tahle ikonka zmizela s odůvodněním „barva to říká taky", nezůstane po ní
+     nic. */}}
 {{ $p    := .page }}
 {{ $full := .full | default false }}
 {{ $en   := eq $p.Site.Language.Lang "en" }}
@@ -29,15 +40,14 @@
   <a class="pp-tile__link" href="{{ $href }}">
     <span class="pp-tile__imgwrap">
       <img class="pp-tile__img" src="{{ relURL $img.src }}" alt="" loading="lazy" width="400" height="220">
+      {{/* Vpravo nahoře, ať se nepotká se značkou AI vpravo dole. */}}
+      {{ if $p.Params.redirect_url }}
+      <span class="pp-ext-mark" title="{{ cond $en "Opens an external site" "Otevře externí web" }}" aria-hidden="true"><i class="bi bi-box-arrow-up-right"></i></span>
+      {{ end }}
       {{ if $img.ai }}{{ partial "ai-image-mark.html" $p }}{{ end }}
     </span>
-    <span class="pp-tile__title">{{ $p.Title }}</span>
+    <span class="pp-tile__title">{{ $p.Title }}{{ if $p.Params.redirect_url }}<span class="visually-hidden"> — {{ cond $en "opens an external site" "otevře externí web" }}</span>{{ end }}</span>
   </a>
-  {{ if $p.Params.redirect_url }}
-  <div class="pp-tile__meta">
-    <span class="pp-origin-badge pp-origin-badge--sm" style="color:var(--pp-text-muted);background:var(--pp-grid)">{{ cond $en "external" "externí" }} <i class="bi bi-box-arrow-up-right"></i></span>
-  </div>
-  {{ end }}
   {{ if $full }}
   {{ with $p.Description }}<p class="pp-tile__desc">{{ . }}</p>{{ end }}
   {{ with $p.Params.tags }}

@@ -314,8 +314,6 @@
   font-size: .88rem;
   padding: .45rem .5rem .2rem;
 }
-.pp-tile__meta { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: .25rem; }
-.pp-tile__meta:last-child { padding-bottom: .5rem; }
 
 
 /* ── Značka „obrázek vygenerovala AI" ─────────────────────────────────────
@@ -342,6 +340,27 @@
   pointer-events: none;
 }
 .pp-ai-mark i { font-size: .66rem; }
+
+/* ── Značka „odkaz vede ven" ──────────────────────────────────────────────
+   Do rohu náhledu, ne pod název. Slovo „externí" pod názvem přebíjelo název
+   samotný; tohle je stejný symbol, jaký na odkaz ven používá kdeco, takže
+   nepotřebuje popisek — jen musí být vidět. Pro odečítač je němá, text nese
+   .visually-hidden uvnitř odkazu.
+
+   Podklad je stejný jako u značky AI a ze stejného důvodu: leží na fotce,
+   jejíž barvu neznáme, takže kontrast musí zajistit sama a v obou motivech
+   stejně. */
+.pp-ext-mark {
+  position: absolute; right: .3rem; top: .3rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.15rem; height: 1.15rem;
+  border-radius: 999px;
+  background: rgb(11 11 11 / .55);
+  color: #fff;
+  font-size: .62rem; line-height: 1;
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
 
 /* ── Původ dat jako barva rámečku karty ───────────────────────────────────
    Nahrazuje slovní štítek na kartách ve výpisech (8. 9. 2026).
