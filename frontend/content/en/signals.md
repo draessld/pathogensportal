@@ -7,7 +7,7 @@
 type: dashboards
 # Stará adresa musí dál fungovat: odkazují na ni dvě publikované novinky.
 aliases:
-  - "/en/dashboards/signals/"
+  - "/dashboards/signals/"
 title: "Signals — anomaly detection"
 origin: own
 description: "Automated screening of 1,200+ notified infectious disease time series (diagnosis × region, ÚZIS ISIN) for exceedances of the expected level using the Farrington/Noufaily method."
