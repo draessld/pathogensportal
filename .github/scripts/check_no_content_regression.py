@@ -58,6 +58,17 @@ def read(path: str) -> str:
 
 
 def main() -> int:
+    # Without a base every file looks new, every comparison is skipped, and the
+    # vacuity guard at the end would report a confusing failure. Say the real
+    # reason instead.
+    if subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", BASE],
+        capture_output=True,
+    ).returncode != 0:
+        print(f"🚨 {BASE} does not resolve here. Fetch it first:")
+        print(f"     git fetch --no-tags origin +refs/heads/main:refs/remotes/{BASE}")
+        return 1
+
     regressions: list[str] = []
     notes: list[str] = []
     compared = 0

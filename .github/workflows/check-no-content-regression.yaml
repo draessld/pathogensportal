@@ -85,7 +85,15 @@ jobs:
       - name: Compare the merge result against what production serves
         run: |
           set -euo pipefail
-          git fetch --no-tags --quiet origin main
+          # ⛔ Explicit refspec. `actions/checkout` configures remote.origin.fetch
+          # for the ref it checked out — for a PR that is the merge ref — so a bare
+          # `git fetch origin main` can update FETCH_HEAD and leave `origin/main`
+          # nonexistent. The script would then find no base for any file.
+          git fetch --no-tags --quiet origin +refs/heads/main:refs/remotes/origin/main
+          git rev-parse --verify --quiet origin/main >/dev/null || {
+            echo "🚨 origin/main did not resolve after fetching it — refusing to guess."
+            exit 1
+          }
           echo "ℹ️  Base: origin/main ($(git rev-parse --short origin/main))"
           echo "ℹ️  This PR would publish the tree checked out here ($(git rev-parse --short HEAD))"
           echo ""
