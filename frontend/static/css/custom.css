@@ -315,6 +315,24 @@
   padding: .45rem .5rem .2rem;
 }
 
+/* ── Karta bez popisu a tagů (titulka) ────────────────────────────────────
+   Karta je položka mřížky, takže se natáhne do výšky nejvyšší karty v řádku.
+   Odkaz uvnitř se ale netáhl s ní, takže u jednořádkového názvu zůstal pod
+   barevným pruhem bílý zbytek do dna — a protože délka názvů se liší, byl
+   u každé karty jinak vysoký.
+
+   Řeší to název: doroste na dno a vezme si tu výšku i s podbarvením. Text
+   zůstává nahoře, hned pod obrázkem, takže názvy drží společnou linku napříč
+   řádkem — kdyby se vycentroval, každý by seděl jinde.
+
+   ⚠️ Neřeš to přes `align-items: start` na mřížce. Bílý pruh zmizí taky, ale
+   karty přestanou mít společné dno a řádek se roztřepí. */
+.pp-tile--compact .pp-tile__link { flex: 1 1 auto; display: flex; flex-direction: column; }
+.pp-tile--compact .pp-tile__title { flex: 1 1 auto; }
+/* Spodní linka pruhu tu nemá co oddělovat — sedla by si na 2px rámeček karty
+   a dno by vypadalo trojnásobně silné. */
+.pp-tile--compact.pp-origin-edge .pp-tile__title { border-bottom: 0; }
+
 
 /* ── Značka „obrázek vygenerovala AI" ─────────────────────────────────────
    V rohu náhledu, ne vypálená v obrázku: generátory kreslí text nespolehlivě,
@@ -387,10 +405,15 @@
   /* Neonová záře „za rámečkem". Dvě vrstvy: těsný prstenec hned u okraje, který
      dělá tu sytost, a krátký rozostřený nádech kolem. Jedna široká vrstva byla
      slabá a rozpitá zároveň — světlo se rozprostřelo do plochy, místo aby
-     drželo u hrany. */
+     drželo u hrany.
+
+     ⚠️ Rozostření se 9. 9. 2026 stáhlo z 9px na 5px (hover ze 14 na 8). Sytost
+     šla nahoru, ne dolů: užší záře při stejné alfě vypadá slabší, protože jí
+     ubyde plocha. Kdo bude hodnoty ladit dál, musí hýbat OBOJÍM — a taky
+     vzorkem v legendě, který je miniaturou téhle karty. */
   box-shadow:
     0 0 0 2px rgb(var(--edge-glow) / .38),
-    0 0 9px 0 rgb(var(--edge-glow) / .7);
+    0 0 5px 0 rgb(var(--edge-glow) / .78);
 }
 /* ⛔ Hover nesmí barvu původu přebít — je to informace, ne dekorace. Zesílí se
    jen záře. Předchozí verze tu nastavovala `border-color: inherit`, takže při
@@ -399,7 +422,7 @@
   border-color: var(--edge);
   box-shadow:
     0 0 0 3px rgb(var(--edge-glow) / .5),
-    0 0 14px 0 rgb(var(--edge-glow) / .95);
+    0 0 8px 0 rgb(var(--edge-glow) / 1);
 }
 
 /* Podbarvení názvu — samotný 2px rámeček se v mřížce ztrácel. Barva je táž jako
@@ -419,7 +442,7 @@
 /* Kdo si vyžádal omezení pohybu, nepřijde o barvu — mizí jen změna při najetí. */
 @media (prefers-reduced-motion: reduce) {
   .pp-tile.pp-origin-edge:hover {
-    box-shadow: 0 0 0 2px rgb(var(--edge-glow) / .38), 0 0 9px 0 rgb(var(--edge-glow) / .7);
+    box-shadow: 0 0 0 2px rgb(var(--edge-glow) / .38), 0 0 5px 0 rgb(var(--edge-glow) / .78);
   }
 }
 
@@ -465,7 +488,7 @@
   );
   box-shadow:
     0 0 0 2px rgb(var(--edge-glow) / .35),
-    0 0 7px 0 rgb(var(--edge-glow) / .7);
+    0 0 4px 0 rgb(var(--edge-glow) / .78);
   margin-top: .2rem;
 }
 .pp-origin-legend__desc { display: block; color: var(--pp-text-secondary); line-height: 1.4; }

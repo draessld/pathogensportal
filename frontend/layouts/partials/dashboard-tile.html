@@ -13,6 +13,11 @@
      ⚠️ Rozdíl mezi oběma je JEN `full`. Nic jiného se lišit nesmí; kdyby ano,
      patří to sem jako další přepínač, ne do druhé šablony.
 
+     `pp-tile--compact` je tentýž přepínač obrácený, aby na něj dosáhlo CSS:
+     bez popisu a tagů je název POSLEDNÍ prvek karty a musí dorůst na její dno.
+     Karta je totiž položka mřížky a roste do výšky nejvyšší karty v řádku —
+     u jednořádkového názvu zbyl pod barevným pruhem bílý pruh do dna.
+
      ⚠️ Původ dat nese barva rámečku, ne štítek. Barva sama je pro barvoslepé
      čtenáře i pro odečítač nula informace, proto `title` na kartě a skrytý
      text; vysvětlení barev je v legendě na /dashboards/.
@@ -34,7 +39,7 @@
 {{ $img  := partial "card-image.html" $p }}
 {{ $href := cond (ne $p.Params.redirect_url nil) ($p.Params.redirect_url | default "") $p.RelPermalink }}
 
-<div class="pp-tile{{ with $m }} pp-origin-edge pp-origin-edge--{{ .key }}{{ end }}"
+<div class="pp-tile{{ if not $full }} pp-tile--compact{{ end }}{{ with $m }} pp-origin-edge pp-origin-edge--{{ .key }}{{ end }}"
      {{ with $m }}title="{{ .label }} — {{ .title }}"{{ end }}>
   {{ with $m }}<span class="visually-hidden">{{ .label }}</span>{{ end }}
   <a class="pp-tile__link" href="{{ $href }}">
