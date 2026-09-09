@@ -456,7 +456,9 @@
       },
       scales: {
         x: {
-          type: linearX ? "linear" : undefined,
+          // Explicit category type preserves the label lookup callback. An
+          // undefined type can leave Chart.js with numeric index tick labels.
+          type: linearX ? "linear" : "category",
           bounds: linearX ? "data" : undefined,
           title: payload && payload.x_title
             ? { display: true, text: payload.x_title, color: t.textMuted, padding: { top: 6 } }
