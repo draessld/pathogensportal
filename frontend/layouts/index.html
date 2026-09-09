@@ -24,16 +24,46 @@
     {{ with .Content }}<div class="pp-home-lead">{{ . }}</div>{{ end }}
   </section>
 
-  {{/* ⛔ Tady stávalo pět dlaždic „Dashboardy / Signály / Novinky / Akce
-       / O portálu". Odstraněny 9. 9. 2026: navigace patří do menu, ne do těla
-       titulní stránky, kde brala místo obsahu a duplikovala horní lištu.
+  {{/* ── 2. Navigace po webu ───────────────────────────────────────────────
+       Odkazy se berou přes .Site.GetPage, ne natvrdo — RelPermalink je pak
+       jazykově správný sám od sebe. Stejná past jako `url` místo `pageRef`
+       v menu (PP-52) a natvrdo psané /tags/ (PP-51): natvrdo psaná cesta se
+       tváří funkčně a v druhém jazyce vede jinam.
 
-       ⚠️ Signály se při tom MUSELY dostat do menu (hugo.toml, obojí jazyk).
-       Byla to jediná cesta na tu stránku — v navbaru nebyla a ze sekce
-       dashboardů odešla, takže samotné smazání dlaždic by ji odřízlo.
-
-       ⏳ Akce v menu nejsou schválně a nebyly sem vráceny: /events/ má jen
-       _index.md, tedy žádný obsah. Blok v hugo.toml na to čeká odkomentovaný. */}}
+       Dlaždice, u které se cíl nenajde, se přeskočí — lepší než odkaz na 404. */}}
+  {{ $signals := .Site.GetPage "/signals" }}
+  {{ $nav := slice
+      (dict "p" (.Site.GetPage "section" "dashboards") "icon" "bi-grid-1x2-fill"
+            "t" (cond $en "Dashboards"  "Dashboardy")
+            "d" (cond $en "Every data view the portal publishes" "Všechny datové přehledy portálu"))
+      (dict "p" $signals "icon" "bi-activity"
+            "t" (cond $en "Signals"     "Signály")
+            "d" (cond $en "What is above its expected level right now" "Co teď překračuje očekávanou hladinu"))
+      (dict "p" (.Site.GetPage "section" "news") "icon" "bi-newspaper"
+            "t" (cond $en "News"        "Novinky")
+            "d" (cond $en "What changed on the portal" "Co se na portálu změnilo"))
+      (dict "p" (.Site.GetPage "section" "events") "icon" "bi-calendar-event"
+            "t" (cond $en "Events"      "Akce")
+            "d" (cond $en "Talks, workshops and meetings" "Přednášky, workshopy a setkání"))
+      (dict "p" (.Site.GetPage "section" "about") "icon" "bi-info-circle"
+            "t" (cond $en "About"       "O portálu")
+            "d" (cond $en "Who runs it, where the data comes from" "Kdo ho dělá a odkud jsou data"))
+  }}
+  <nav class="pp-home-nav mb-5" aria-label="{{ cond $en "Sections of this site" "Sekce webu" }}">
+    {{/* ⚠️ `$it := .` PŘED `with`: uvnitř `with` se kontext přepne na stránku,
+         takže .icon a .t z dlaždice by byly prázdné. Tiše — `with` na
+         neexistujícím klíči nic nehlásí, jen nevykreslí. */}}
+    {{ range $nav }}
+    {{ $it := . }}
+    {{ with $it.p }}
+    <a class="pp-home-navtile" href="{{ .RelPermalink }}">
+      <i class="bi {{ $it.icon }}" aria-hidden="true"></i>
+      <span class="pp-home-navtile__t">{{ $it.t }}</span>
+      <span class="pp-home-navtile__d">{{ $it.d }}</span>
+    </a>
+    {{ end }}
+    {{ end }}
+  </nav>
 
   {{/* ── 3. Dashboardy jako karty ──────────────────────────────────────────
        ⛔ Karty, ne textový seznam. Rozhodnutí „otevřu tohle?" padá podle toho,

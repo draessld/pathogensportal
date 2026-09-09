@@ -84,8 +84,11 @@
 </nav>
 <!-- ENDS HERE - Top navigation bar with logo and menu beside the logo -->
 
-<!-- Expandable top navigation menu, controlled by above defined hamburger button, only visible on small screens -->
-<nav class="navbar navbar-expand-lg navbar-light pt-0 pb-1">
+{{/* Menu pro VŠECHNY šířky, otevírá se hamburgerem výše.
+     ⛔ Bez `navbar-expand-*` schválně: s `navbar-expand-lg` se na desktopu
+     rozbalí samo a sedí roztažené pod hlavičkou, což je přesně to, co odsud
+     mělo zmizet. */}}
+<nav class="navbar navbar-light pt-0 pb-1">
     <div class="container">
         <div class="collapse navbar-collapse" id="navbarCollapseBottom">
 
@@ -102,10 +105,16 @@
             </div>
 
             <!-- Top nav list i.e. About, Contact, Language, etc -->
+            {{/* Oddělovač patří k bloku NAD ním, a ten je `d-lg-none` — na
+                 desktopu by jinak menu začínalo čarou bez ničeho nad sebou. */}}
             <hr class="d-lg-none">
 
-            <!-- Main navigation menu for all pages, English site. Visible only in smaller devices -->
-            <div class="d-lg-none">
+            {{/* ⛔ Tenhle blok NESMÍ mít `d-lg-none`. Měl ho, dokud existovala
+                 vodorovná lišta pro desktop — po jejím odstranění 9. 9. 2026 by
+                 hamburger nad `lg` otevíral PRÁZDNÉ menu. Chyceno vykreslením
+                 otevřeného stavu, ne čtením kódu: zavřené menu vypadá správně
+                 v obou případech. */}}
+            <div>
                 {{ $events := .Site.GetPage "section" "dashboards" }}
                 {{ if $events }}
                 <div class="main_menu_item pb-1">
@@ -166,65 +175,25 @@
                 </div>
                 {{ end }}
             </div>
-            <hr class="d-lg-none">
 
         </div>
     </div>
 </nav>
 <!-- ENDS HERE - Expandable top navigation menu, controlled by above defined hamburger button -->
 
-<!-- Main navigation menu, English version. Visibile only on bigger screens -->
-<div class="container mb-3 d-none d-lg-block">
-    <div class="row row-cols-auto">
-        {{ $events := .Site.GetPage "section" "dashboards" }}
-        {{ if $events }}
-        <div class="col-auto main_menu_item">
-            <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink"
-               data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false">{{ i18n "dataDashboards" }}</a>
-            <div class="dropdown-menu main_menu_item_sub" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item m-0" href="{{ $events.RelPermalink }}">{{ i18n "allDashboards" }}</a>
-                {{ range $events.RegularPages }}
-                <a class="dropdown-item m-0" href="{{ if .Params.redirect_url }}{{ .Params.redirect_url }}{{ else }}{{ .RelPermalink }}{{ end }}">{{ .Name }}{{ if .Params.redirect_url }} <i class="bi bi-box-arrow-up-right small" title="{{ if eq $.Site.Language.Lang "en" }}external link{{ else }}externí odkaz{{ end }}"></i>{{ end }}</a>
-                {{ end }}
-            </div>
-        </div>
-        {{ end }}
-        {{ range where .Site.Menus.main "Identifier" "ne" "dashboards" }}
-        <div class="col-auto main_menu_item">
-            {{ $menuName := .Identifier }} <!-- Use . to refer to the current context -->
-            {{ $menu := index $.Site.Menus $menuName }} <!-- Use $.Site to refer to the site context -->
-            {{ if $menu }}
-            <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink"
-               data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false">{{ .Name }}</a>
-            <div class="dropdown-menu main_menu_item_sub" aria-labelledby="navbarDropdownMenuLink">
-                {{ range $menu }}
-                <a class="dropdown-item m-0" href="{{ .Page.RelPermalink }}">{{ .Name }}</a>
-                {{ end }}
-            </div>
-            {{ else }}
-            <a href="{{ .URL }}">{{ .Name }}</a>
-            {{ end }}
-        </div>
-        {{ end }}
-        {{ if .Site.Taxonomies.tags }}
-        <div class="col-auto main_menu_item">
-            <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink"
-               data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false">{{ i18n "topics" }}</a>
-            <div class="dropdown-menu main_menu_item_sub" aria-labelledby="navbarDropdownMenuLink">
-                {{- /* Stejný filtr jako v mobilním menu — jen tagy s obsahem. */ -}}
-                {{- $visible2 := slice -}}
-                {{- range site.RegularPages -}}{{- range .Params.tags -}}{{- $visible2 = $visible2 | append (. | urlize) -}}{{- end -}}{{- end -}}
-                {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
-                {{ if in $visible2 ($name | urlize) }}
-                <a class="dropdown-item m-0" href="{{ (printf "/tags/%s/" (urlize $name)) | relLangURL }}">{{ $name }}</a>
-                {{ end }}
-                {{ end }}
-            </div>
-        </div>
-        {{ end }}
-    </div>
-</div>
-<!--  ENDS HERE - Main navigation menu, English version for bigger screens -->
+{{/* ⛔ Tady stávala vodorovná lišta menu — `d-none d-lg-block`, tedy druhé
+     vykreslení TÝCHŽ položek jen pro desktop. Odstraněna 9. 9. 2026: menu se
+     má rozkliknout, ne sedět roztažené pod hlavičkou.
+
+     Od té doby má web JEDNO menu pro všechny šířky — `#navbarCollapseBottom`
+     výše. Proto z jeho `<nav>` zmizelo `navbar-expand-lg`: s ním se na
+     desktopu rozbalilo samo a schování by nic neřešilo.
+
+     ⚠️ Hamburger je v horním `<nav>`, které si `navbar-expand-lg` PONECHALO —
+     bez něj by se sbalil i pruh s „O portálu", který nemá `id` a nešlo by ho
+     ničím otevřít. Bootstrap ale v takovém navbaru tlačítko nad `lg` skrývá,
+     takže ho custom.css musí zobrazit zpátky (`.navbar-toggler`). Ty dva kusy
+     drží pohromadě: kdo vrátí `navbar-expand-lg` dolů nebo to pravidlo v CSS
+     smaže, zůstane bez menu.
+
+     Vrátit vodorovnou lištu = tenhle soubor v git historii před 9. 9. 2026. */}}

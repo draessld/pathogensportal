@@ -505,3 +505,18 @@
 .pp-tile__tags { padding: .5rem .6rem .6rem; display: flex; flex-wrap: wrap; gap: .3rem; }
 .pp-tile__desc + .pp-tile__tags { padding-top: .45rem; }
 .pp-tile > :last-child { margin-bottom: 0; }
+
+/* ── Hamburger na všech šířkách ────────────────────────────────────────────
+   Od 9. 9. 2026 má web jedno menu pro všechny šířky: vodorovná lišta pod
+   hlavičkou je pryč a `#navbarCollapseBottom` se otevírá tlačítkem.
+
+   ⛔ Tohle pravidlo je nutné, ne kosmetické. Tlačítko sedí v horním navbaru,
+   který si `navbar-expand-lg` musel ponechat (jinak se sbalí i pruh
+   s „O portálu", který nemá `id` a nešlo by ho otevřít) — a Bootstrap
+   v takovém navbaru `.navbar-toggler` nad `lg` skrývá. Bez téhle výjimky
+   nemá desktop na menu jak sáhnout.
+
+   ⚠️ Drží pohromadě s navbar.html. Kdo vrátí vodorovnou lištu, musí smazat
+   i tohle; kdo smaže tohle a lištu nevrátí, nechá web bez navigace. */
+.navbar-expand-lg .navbar-toggler { display: inline-block; }
+.navbar-toggler:focus-visible { outline: 2px solid var(--pp-origin-aggregated, #2a78d6); outline-offset: 2px; }
