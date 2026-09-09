@@ -35,6 +35,9 @@ data submodule.
   the generated JSONs); a finite dictionary in `pp-charts.js` translates the common ones, the 114 ISIN
   diagnosis names remain Czech with a note on the pages (permanent fix tracked as pathogensportal-db#47).
   New content pages must be added in both languages or the EN site silently loses them.
+  ⚠️ **`aliases:` must be written language-neutral.** Hugo prefixes the language onto an alias of a
+  non-default language, so `/en/dashboards/signals/` in `content/en/` builds `/en/en/dashboards/signals/`
+  and the real English URL 404s. Write the Czech form in both files. (Found 9 Sep 2026, live on staging.)
 
 **Data model (A):** chart JSON is **committed** into `frontend/static/data/charts/` (the site stays static).
 To regenerate from the submodule:
@@ -44,6 +47,11 @@ OUTPUT_DIR=../frontend/static/data/charts python pathogensportal-db/scripts/gene
 # or through the container:
 docker compose -f deploy/docker-compose.yml --profile tools run --rm datascrapper
 ```
+
+⛔ **Check `git status -sb` before you edit anything in this repo.** The pipeline commits to `dev` on its
+own schedule, so a checkout goes stale without anyone touching it — on 9 Sep 2026 a local `dev` was
+**173 commits behind** and an edit to it looked like it had done nothing, because staging builds from
+`origin/dev`. "I pulled recently" is not the same as "I am current".
 
 ⚠️ **On `dev` this is automated since 31 Aug 2026 — do not hand-edit the generated files there.**
 A push to `pathogensportal-db`'s `dev` branch makes the dev server run the pipeline and **commit** the
@@ -55,6 +63,15 @@ merge.
 ⏳ Model A itself is transitional. `pp-charts.js` already asks `/api/charts` first and falls back to
 the committed JSON only when the backend is absent, so once website-be + Postgres run the data stops
 needing to be committed at all.
+
+⛔ **Never type an update date into a dashboard's front matter.** A page states its freshness with
+`update_from: "<file>.json"`, and `layouts/dashboards/single.html` reads the stamp out of that file.
+Two stamps, two different claims, two different labels — do not merge them: `generated_at` is when the
+pipeline ran ("Aktualizace: …"), `posledni_datum` is how far the data reaches ("Data k …"); a run on
+9 Sep can return figures through 8 Sep. A hand-written date rots at the next pipeline run with nothing to
+correct it, because the pipeline rewrites only the `ebola-*` pages. ⚠️ Only `anomaly_signals.json`,
+`covid_summary.json` and `ebola_summary.json` carry a stamp today; the rest still state a frequency, and
+fixing that is a change to `save()` in `pathogensportal-db`, not here.
 
 ## Common commands
 
