@@ -6,7 +6,8 @@ image: "/images/cards/covid.webp"
 highlight: true
 tags: ["SARS-CoV-2", "hospitalisation", "vaccination", "surveillance", "Czech MoH", "Czech Republic"]
 data_source: '<a href="https://onemocneni-aktualne.mzcr.cz" target="_blank">Czech Ministry of Health — Disease Update</a>'
-update_freq: "Daily"
+# The date comes from posledni_datum in this JSON, not from here.
+update_from: "covid_summary.json"
 ---
 
 {{< nav-pills group="infekcni-nemoci" active="covid" >}}
