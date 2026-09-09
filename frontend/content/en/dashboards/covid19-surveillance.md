@@ -8,6 +8,7 @@ tags: ["SARS-CoV-2", "hospitalisation", "vaccination", "surveillance", "Czech Mo
 data_source: '<a href="https://onemocneni-aktualne.mzcr.cz" target="_blank">Czech Ministry of Health — Disease Update</a>'
 # The date comes from posledni_datum in this JSON, not from here.
 update_from: "covid_summary.json"
+update_read: "stamp"
 ---
 
 {{< nav-pills group="infekcni-nemoci" active="covid" >}}

@@ -7,6 +7,7 @@ tags: ["SARS-CoV-2", "hospitalizace", "vakcinace", "surveillance", "MZČR", "ČR
 data_source: '<a href="https://onemocneni-aktualne.mzcr.cz" target="_blank">MZČR — onemocnění aktuálně</a>'
 # Datum se bere z posledni_datum v tomhle JSON, ne odsud.
 update_from: "covid_summary.json"
+update_read: "stamp"
 build:
   list: never
   render: always

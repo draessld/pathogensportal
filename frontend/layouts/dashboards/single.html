@@ -32,45 +32,12 @@
       {{ with .Params.data_source }}
       <span class="pp-meta__item"><i class="bi bi-database" aria-hidden="true"></i> {{ cond $en "Source" "Zdroj" }}: {{ . | safeHTML }}</span>
       {{ end }}
-      {{/* Datum posledního běhu pipeline se ČTE Z DAT, nepíše se do hlavičky.
-
-           `update_from` jmenuje JSON v static/data/charts/; datum je jeho
-           `generated_at`. Ta stránka o pipeline referuje, takže cokoli
-           napsaného ručně zastará hned při dalším běhu — a nikdo si toho
-           nevšimne, protože to pořád vypadá jako platný údaj.
-
-           ⚠️ Pipeline tenhle soubor s obsahem stránky NEPŘEPISUJE (na rozdíl
-           od ebola stránek), takže tady se ručně zapsané datum ani nemá jak
-           samo opravit.
-
-           `update_freq` zůstává pro stránky, kde žádné takové razítko není —
-           u těch je slovní údaj o frekvenci to jediné, co se dá říct pravdivě.
-
-           ⛔ Dvě různá razítka, dvě různá tvrzení, a NESMÍ splynout pod jeden
-           popisek. `generated_at` říká, KDY BĚŽELA PIPELINE; `posledni_datum`
-           říká, PO KTERÉ DATUM SAHAJÍ DATA. Běh 9. 9. může přinést čísla k
-           8. 9. — „Aktualizace: 9. 9." by pak čtenáři tvrdilo, že má v ruce
-           včerejšek, který tam není. Proto „Aktualizace: <čas běhu>" versus
-           „Data k <datum>". */}}
-      {{ $ran  := "" }}{{/* generated_at — kdy běžela pipeline */}}
-      {{ $thru := "" }}{{/* posledni_datum — po které datum data sahají */}}
-      {{ with .Params.update_from }}
-        {{ $path := printf "static/data/charts/%s" . }}
-        {{ if os.FileExists $path }}
-          {{ $j := os.ReadFile $path | transform.Unmarshal }}
-          {{ with $j.generated_at }}{{ $ran = . }}{{ end }}
-          {{ with $j.posledni_datum }}{{ $thru = . }}{{ end }}
-          {{ if and (not $ran) (not $thru) }}
-            {{ errorf "update_from: %q nemá generated_at ani posledni_datum (stránka %q)" $path $.Title }}
-          {{ end }}
-        {{ else }}
-          {{ errorf "update_from: %q neexistuje (stránka %q)" $path $.Title }}
-        {{ end }}
-      {{ end }}
-      {{ if $ran }}
-      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ cond $en "Updated" "Aktualizace" }}: {{ (time.AsTime $ran).Format (cond $en "2 Jan 2006, 15:04 MST" "2. 1. 2006, 15:04 MST") }}</span>
-      {{ else if $thru }}
-      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ cond $en "Data through" "Data k" }} {{ (time.AsTime $thru).Format (cond $en "2 Jan 2006" "2. 1. 2006") }}</span>
+      {{/* Jak čerstvý dashboard je. Celá logika i její zdůvodnění jsou
+           v update-stamp.html; sem patří jen vykreslení. `update_freq` je
+           záložní slovní údaj pro stránky, které vlastní datum mít nemůžou. */}}
+      {{ $u := partial "update-stamp.html" . }}
+      {{ if $u }}
+      <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ $u.text }}</span>
       {{ else }}{{ with .Params.update_freq }}
       <span class="pp-meta__item"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ cond $en "Updated" "Aktualizace" }}: {{ . }}</span>
       {{ end }}{{ end }}
