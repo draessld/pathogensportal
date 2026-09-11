@@ -71,10 +71,10 @@
   </div>
 </div>
 
-<script src="/vendor/chartjs/chart.umd.min.js"></script>
+<script src="{{ "vendor/chartjs/chart.umd.min.js" | relURL }}"></script>
 <script>
   // Empty = same origin (production, behind Apache). In dev, HUGO_PARAMS_APIBASE sets it.
   window.PP_API_BASE = {{ .Site.Params.apibase | default "" }};
 </script>
-<script src="/js/pp-charts.js"></script>
+<script src="{{ "js/pp-charts.js" | relURL }}"></script>
 {{ end }}
